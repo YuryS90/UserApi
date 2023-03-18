@@ -1,0 +1,25 @@
+{
+    "name": "yury-s90/user-api",
+    "description": "Registration, authentication, authorization",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Yury",
+            "email": "spawn5194@mail.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^0.6.0",
+        "php-di/php-di": "^6.0",
+        "ext-pdo": "^7.4",
+        "php": "~7.4"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
