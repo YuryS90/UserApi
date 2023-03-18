@@ -2,6 +2,7 @@
 
 namespace App\Controllers\User;
 
+use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class AddController extends AbstractController
