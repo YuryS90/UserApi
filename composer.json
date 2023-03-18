@@ -14,7 +14,9 @@
         "slim/psr7": "^0.6.0",
         "php-di/php-di": "^6.0",
         "ext-pdo": "^7.4",
-        "php": "~7.4"
+        "php": "~7.4",
+        "vlucas/phpdotenv": "^5.5",
+        "robmorgan/phinx": "^0.13.4"
     },
 
     "autoload": {
