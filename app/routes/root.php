@@ -1,6 +1,8 @@
 <?php
+declare(strict_types=1);
+
 return function ($app)
 {
-    // Группа маршрутов пользователя
+    // Маршруты пользователя
     $app->group('/user', include 'app/routes/user/user.php');
 };
