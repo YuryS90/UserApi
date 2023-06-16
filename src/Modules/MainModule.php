@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules;
 
 use App\Common\ContainerTrait;
 
-class Model
+class MainModule
 {
     use ContainerTrait;
 }

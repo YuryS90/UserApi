@@ -2,29 +2,9 @@
 
 namespace App\Modules;
 
-use App\Common\ContainerTrait;
-use App\Common\HelperTrait;
 
-class Validator
+class Validator extends MainModule
 {
-    use HelperTrait, ContainerTrait;
-
-    protected array $message = [
-        'login.required' => 'Заполните поле логин!',
-        'login.string' => 'Логин должен соответствовать строчному типу!',
-        'login.login' => 'Логин должен содержать только кириллические буквы, латинские буквы, цифры и знаки подчеркивания',
-        'login.min' => 'Логин слишком короткий: минимум 5 символов!',
-        'login.max' => 'Логин слишком длинный: максимум 10 символов!',
-        'login.unique' => 'Пользователь с таким логином уже существует!',
-
-        'email.required' => 'Заполните поле email!',
-        'email.string' => 'Email должен соответствовать строчному типу!',
-        'email.email' => 'Email должен соответствовать формату mail@some.com',
-        'email.min' => 'Email слишком короткое: минимум 5 символов!',
-        'email.max' => 'Email слишком длинное: максимум 10 символов!',
-        'email.unique' => 'Пользователь с таким email уже существует!',
-    ];
-
     protected array $data;
     protected array $rules;
     private array $errors = [];
@@ -97,7 +77,7 @@ class Validator
 
         $this->errors += [
             'error' => true,
-            'message' => $this->message["$field.$rule"]
+            'message' => $this->validate['message']["$field.$rule"]
         ];
 
     }

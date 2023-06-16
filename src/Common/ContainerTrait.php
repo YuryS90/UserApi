@@ -6,6 +6,8 @@ use Psr\Container\ContainerInterface;
 
 trait ContainerTrait
 {
+    use HelperTrait;
+
     private ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)

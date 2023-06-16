@@ -5,8 +5,12 @@ use Psr\Container\ContainerInterface;
 
 return [
 
-    'valid' => function (ContainerInterface $container) {
+    'validClass' => function (ContainerInterface $container) {
         return new \App\Modules\Validator($container);
+    },
+
+    'genClass' => function (ContainerInterface $container) {
+        return new \App\Modules\Generator($container);
     }
 
 ];

@@ -13,6 +13,7 @@ class CreateController extends AbstractController
      */
     public function run(): Response
     {
+        // План предварительной регистрации
         // 1 Поймал данные
         // 2 Обработал их, если ошибка, вернул её (статус 400)
         // 3 Сгенерироривал пароль
@@ -20,43 +21,25 @@ class CreateController extends AbstractController
         // 5 Отправка на почту пароля
         // 6 Вернул статус 201
 
-
-        // добавить пользователя в базу данных после генерации пароля и перед отправкой письма
+        // 1
         // request = $this->request->getParsedBody();
 
-        // 1
+        // 1 (временное)
         $request = [
-            'login' => "Sp2wN",
+            'login' => "Sp2wN@",
             'email' => "yurkesson@yandex.by",
         ];
 
-
-        // Правила валидации
-        // TODO: Вынести в файл конфига validateconfig.php
-        // про крон, воркер
-        $rules = [
-            'reg' => [
-                'login' => 'required|string|login|min:5|max:50|unique:users,login',
-                'email' => 'required|string|email|min:5|max:255|unique:users,email',
-            ]
-        ];
-
         // 2
-        $error = $this->valid->validated($request, $rules);
+        $error = $this->validClass->validated($request, $this->validate['rules']['signUp']);
 
         if ($error['error']) {
-            $this->response->getBody()->write(json_encode($error, JSON_UNESCAPED_UNICODE));
-
-            return $this->response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(400);
+            return $this->responseJson($error, 400);
         }
 
-        // 3 Генерация пароля
-        $password = $this->generatePassword(12);
-        $this->dd(password_hash($password, PASSWORD_DEFAULT));
-
-        // password_hash()
+        // 3 Генерация и хэширование пароля
+        $password = password_hash($this->genClass->password(12), PASSWORD_DEFAULT);
+        $this->dd($password);
 
         // 5 Отправка письма с паролем
         $this->sendEmail($request['email'], $password);
@@ -69,31 +52,9 @@ class CreateController extends AbstractController
             'message' => "Регистрация прошла успешно. Пароль был отправлен на {$request['email']}"
         ];
 
-        $this->response->getBody()->write(json_encode($responseData, JSON_UNESCAPED_UNICODE));
-
-
-
-        return $this->response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(201);
+        return $this->responseJson($responseData, 201);
     }
 
-
-    /**
-     * @throws \Exception
-     */
-    private function generatePassword(int $length = 10): string
-    {
-        // в конфиг поместить
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()-_=+';
-        $password = '';
-
-        for ($i = 0; $i < $length; $i++) {
-            $password .= $characters[random_int(0, strlen($characters) - 1)];
-        }
-
-        return $password;
-    }
 
     private function sendEmail($email, $password)
     {

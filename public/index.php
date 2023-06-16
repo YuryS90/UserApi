@@ -17,6 +17,7 @@ $containerBuilder->addDefinitions(
     'database/config/phinx.php',
     'app/modules.php',
     'app/models.php',
+    'app/config.php',
 );
 
 $container = $containerBuilder->build();
