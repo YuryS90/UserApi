@@ -18,6 +18,8 @@ $containerBuilder->addDefinitions(
     'app/modules.php',
     'app/models.php',
     'app/config.php',
+    //'app/payload.php',
+    'app/middlewares.php',
 );
 
 $container = $containerBuilder->build();
@@ -30,6 +32,10 @@ $app = AppFactory::create();
 // Это $_POST. Включает парсинг json в getParsedBody()
 $app->addBodyParsingMiddleware();
 
-$app->group('', include 'app/routes/root.php');
+$app->addErrorMiddleware(true, true, true);
+
+$app->group('', include 'app/routes/root.php')->add('exceptionMiddleware');
+
+$app->addRoutingMiddleware();
 
 $app->run();
