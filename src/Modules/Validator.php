@@ -2,7 +2,6 @@
 
 namespace App\Modules;
 
-
 class Validator extends MainModule
 {
     protected array $data;
@@ -50,9 +49,9 @@ class Validator extends MainModule
                 if (method_exists($this, $method)) {
 
                     // *Формируем параметры валидации
-                    // Для required, string, email параметров нет - []
-                    // Для max:255/min:8 параметр будет 255/8 (ключ 0)
-                    // Для unique:users,email параметры: users(ключ 0) и email(ключ 1)
+                    //      Для required, string, email параметров нет - []
+                    //      Для max:255/min:8 параметр будет 255/8 (ключ 0)
+                    //      Для unique:users,email параметры: users(ключ 0) и email(ключ 1)
                     $params = $ruleParts[1] ? explode(',', $ruleParts[1]) : [];
 
                     $params = array_merge([$data], $params);
@@ -79,7 +78,6 @@ class Validator extends MainModule
             'error' => true,
             'message' => $this->validate['message']["$field.$rule"]
         ];
-
     }
 
     private function ruleRequired(string $value): bool
