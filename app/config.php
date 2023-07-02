@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+// Сохранение параметров в $_ENV
+(\Dotenv\Dotenv::createImmutable(dirname(__DIR__)))->load();
+
 return [
 
     'validate' => [
@@ -35,6 +38,20 @@ return [
 
     'generate' => [
         'password' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*()-_=+'
+    ],
+
+    'settings' => [
+
+        'email' => [
+            'host' => $_ENV['MAIL_HOST'],
+            'port' => $_ENV['MAIL_PORT'],
+            'secure' => $_ENV['MAIL_ENCRYPTION'],
+            //'name' => $_ENV['MAIL_USERNAME'],
+            'password' => $_ENV['MAIL_PASSWORD'],
+            'fromAddress' => $_ENV['MAIL_FROM_ADDRESS'],
+            'charset' => 'UTF-8',
+            'subject' => 'Пароль для авторизации',
+        ]
     ]
 
 ];

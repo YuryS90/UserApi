@@ -11,6 +11,10 @@ return [
 
     'genClass' => function (ContainerInterface $container) {
         return new \App\Modules\Generator($container);
+    },
+
+    'mailClass' => function (ContainerInterface $container) {
+        return new \App\Modules\Mail\Email($container->get('settings')['email']);
     }
 
 ];
