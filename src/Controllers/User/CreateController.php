@@ -15,8 +15,8 @@ class CreateController extends AbstractController
         // 1
         // request = $this->request->getParsedBody();
         $request = [
-            'login' => "Sp2wN",
-            'email' => "yurkesson@yandex.by",
+            'login' => "Sp2wN45",
+            'email' => "yurkesson45@yandex.by",
         ];
 
         // 2
@@ -28,24 +28,15 @@ class CreateController extends AbstractController
             //$passwordSend = $this->genClass->password(12);
             $passwordSend = "123";
 
-            //$data = require 'app/payload.php';
-            //$this->dd($data['createUser']);
-
-            // 4
-            $payload = [
-                'login' => $request['login'],
-                'email' => $request['email'],
-                'pwd' => password_hash($passwordSend, PASSWORD_DEFAULT),
-                'roles_id' => 3
-            ];
-
-            //$this->userRepo->insertOrUpdate($payload);
+            $this->userRepo->insertOrUpdate($request);
+            $this->dd('--------------------');
 
             // 5 Отправка письма с паролем
-            $send = $this->mailClass->sendEmail($request['email'], [
-                'login' => $request['login'],
-                'pwdSend' => $passwordSend
-            ]);
+            $send = $this->mailClass->sendEmail($request['email'],
+                [
+                    'login' => $request['login'],
+                    'pwdSend' => $passwordSend
+                ]);
 
             $this->dd($send);
 
