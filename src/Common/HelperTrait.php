@@ -8,7 +8,7 @@ use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 trait HelperTrait
 {
-    public function debug(...$data)
+    public function debug(...$data): void
     {
         foreach ($data as $item) {
             new \Ospinto\dBug($item);
@@ -19,7 +19,7 @@ trait HelperTrait
     /**
      * @throws \ErrorException
      */
-    public function dd(...$data)
+    public function dd(...$data): void
     {
         $cloner = new VarCloner();
 
@@ -33,5 +33,10 @@ trait HelperTrait
             $dumper->dump($data);
         }
         exit;
+    }
+
+    public function log(array $params, bool $error = false): void
+    {
+        $this->logMod->logger($params, $error);
     }
 }

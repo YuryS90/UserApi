@@ -1,5 +1,7 @@
 <?php
 
+use App\Exception\NotFound;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 
 // Не ругается на require(vendor/autoload.php)
@@ -13,12 +15,12 @@ $containerBuilder = new \DI\ContainerBuilder();
 
 // Определим зависимости проекта
 $containerBuilder->addDefinitions(
+    'app/framework.php',
     'app/builder.php',
     'database/config/phinx.php',
     'app/modules.php',
     'app/models.php',
     'app/config.php',
-    //'app/payload.php',
     'app/middlewares.php',
 );
 
@@ -32,10 +34,12 @@ $app = AppFactory::create();
 // Это $_POST. Включает парсинг json в getParsedBody()
 $app->addBodyParsingMiddleware();
 
-$app->addErrorMiddleware(true, true, true);
-
-$app->group('', include 'app/routes/root.php')->add('exceptionMiddleware');
-
 $app->addRoutingMiddleware();
+$error = $app->addErrorMiddleware(true, true, true);
+$error->setErrorHandler(HttpNotFoundException::class, NotFound::class);
+
+$app->group('', include 'app/routes/root.php')
+    ->add('serverMiddleware') // 2
+    ->add('exceptionMiddleware'); // 1
 
 $app->run();

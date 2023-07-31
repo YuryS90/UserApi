@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 
+/**
+ * Регистрация класса для работы с БД
+ */
 return [
 
     'db' => function (ContainerInterface $container) {

@@ -3,18 +3,25 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 
+/**
+ * Регистрация модулей
+ */
 return [
 
-    'validClass' => function (ContainerInterface $container) {
+    'validMod' => function (ContainerInterface $container) {
         return new \App\Modules\Validator($container);
     },
 
-    'genClass' => function (ContainerInterface $container) {
+    'genMod' => function (ContainerInterface $container) {
         return new \App\Modules\Generator($container);
     },
 
-    'mailClass' => function (ContainerInterface $container) {
-        return new \App\Modules\Mail\Email($container->get('settings')['email']);
-    }
+    'mailMod' => function (ContainerInterface $container) {
+        return new \App\Modules\Mail\Email($container, $container->get('settings')['email']);
+    },
+
+    'logMod' => function (ContainerInterface $container) {
+        return new \App\Modules\Log\ActionLog($container);
+    },
 
 ];
