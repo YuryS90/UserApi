@@ -2,31 +2,47 @@
 
 namespace App\Modules;
 
+use Exception;
+
 class Validator extends MainModule
 {
     protected array $data;
     protected array $rules;
-    private array $errors = [];
+    protected array $errors = [];
 
-    // Возвращаем массив: пустой или с ошибками
-    public function validated(array $data, array $rules): array
+    const MESSAGE_TYPE = 'validate';
+
+    /**
+     * Проверка пришедших данных от юзера
+     * @throws Exception
+     */
+    public function validated(array $data = [], array $rules = []): string
     {
         if (empty($data) || empty($rules)) {
-            return [
-                'error' => true,
-                'message' => 'Запрос пустой или нет правил!'
-            ];
+            throw new Exception($this->getMessage(self::MESSAGE_TYPE, 'empty'));
         }
-
         $this->data = $data;
         $this->rules = $rules;
 
-        $this->parseRule();
+        $this->parseRules();
 
-        return $this->errors;
+        // Если есть ошибки, то подготавливаем к логу
+        if (!empty($this->errors)) {
+            $this->log([
+                'place' => get_class($this),
+                'message' => $this->errors,
+                'login' => $data['login'],
+                'email' => $data['email']
+            ], true);
+        }
+        // Возвращаем либо ошибку, либо ничего
+        return current($this->errors);
     }
 
-    private function parseRule(): void
+    /**
+     * @throws Exception
+     */
+    private function parseRules(): void
     {
         foreach ($this->rules as $field => $value) {
 
@@ -43,7 +59,7 @@ class Validator extends MainModule
                 $ruleParts = explode(':', $rule);
 
                 // *Название метода валидации
-                $method = 'rule' . ucfirst(current($ruleParts));
+                $method = 'checkRule' . ucfirst(current($ruleParts));
 
                 // Есть метод, напр ruleString() в классе Validator?
                 if (method_exists($this, $method)) {
@@ -59,82 +75,78 @@ class Validator extends MainModule
                     if (!$this->{$method}(...$params)) {
                         $this->addError($field, $rule);
                     }
-
                 } else {
-                    die(json_encode("Метод для {$ruleParts[0]} не создан!", JSON_UNESCAPED_UNICODE));
+                    throw new Exception(
+                        str_replace('rule', "$ruleParts[0]",
+                            $this->getMessage(self::MESSAGE_TYPE, 'method')));
                 }
             }
         }
     }
 
-    private function addError(string $field, string $rule): void
+    /**
+     * Добавление ошибки
+     */
+    public function addError(string $field, string $rule): void
     {
         // Отсекаем из правила то, что идёт после ":"
         if (preg_match('/:/', $rule)) {
             $rule = substr(strstr($rule, ':', true), 0);
         }
-
-        $this->errors += [
-            'error' => true,
-            'message' => $this->validate['message']["$field.$rule"]
-        ];
+        $this->errors[] = $this->getMessage(self::MESSAGE_TYPE, "$field.$rule");
     }
 
-    private function ruleRequired(string $value): bool
+    private function checkRuleRequired(string $value): bool
     {
         // Ошибка на  =>   '0', '', ' ', [], '  ', null
         return !empty(trim($value));
     }
 
-    private function ruleString($value): bool
+    private function checkRuleString($value): bool
     {
         return is_string($value);
     }
 
-    private function ruleLogin(string $login): bool
+    private function checkRuleLogin(string $login): bool
     {
         return preg_match('/^[\p{L}\p{N}_]+$/u', $login) === 1;
     }
 
-    private function ruleEmail(string $email): bool
+    private function checkRuleEmail(string $email): bool
     {
         return preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]+$/ui', trim($email)) === 1;
     }
 
-
-    private function ruleMax(string $value, string $length): bool
+    private function checkRuleMax(string $value, string $length): bool
     {
         return strlen($value) <= intval($length);
     }
 
-    private function ruleMin(string $value, string $length): bool
+    private function checkRuleMin(string $value, string $length): bool
     {
         return strlen($value) >= intval($length);
     }
 
-    // unique:table,column
-    private function ruleUnique(string $data, string $table, string $field): bool
+    /**
+     * Правило: unique:table,column, где column = $field
+     * @throws Exception
+     */
+    private function checkRuleUnique(string $data, string $table, string $field): bool
     {
         if ($table === 'users') {
 
             // Формирование параметров для запроса в БД
-            $params = [];
-
-            if ($field === 'email' || $field === 'login') {
-                $params[$field] = trim($data);
-            }
-
-            $params += [
-                'fields' => ['COUNT(*)'],
+            $params = [
+                'fields' => ["COUNT({$field})"],
                 'count' => true,
+                $field => trim($data)
             ];
 
             // Результат запроса: SELECT COUNT(*) FROM users WHERE $field = $data
             $count = $this->userRepo->filter($params);
         } else {
-            die(json_encode('Такой таблицы нет!', JSON_UNESCAPED_UNICODE));
+            throw new Exception($this->getMessage(self::MESSAGE_TYPE, 'table'));
         }
-
         // 0 - нет в БД, 1 - есть в БД
         return $count === 0;
     }

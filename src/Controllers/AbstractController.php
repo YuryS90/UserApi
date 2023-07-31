@@ -2,16 +2,17 @@
 
 namespace App\Controllers;
 
-use App\Common\ControllerTrait;
+use App\Common\ContainerTrait;
+use App\Common\ServiceTrait;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 abstract class AbstractController
 {
-    use ControllerTrait;
+    use ContainerTrait, ServiceTrait;
 
     protected Request $request;
-    protected Response $response;
+    protected \Slim\Psr7\Response $response;
     protected array $args;
 
     public function __invoke(Request $request, Response $response, array $args): Response

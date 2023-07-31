@@ -2,36 +2,30 @@
 
 namespace App\Modules\Mail;
 
-use App\Common\HelperTrait;
-use PHPMailer\PHPMailer\Exception;
+use App\Common\ContainerTrait;
+use App\Common\ServiceTrait;
+use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use RuntimeException;
 
 class Email
 {
-    use HelperTrait;
+    use ContainerTrait, ServiceTrait;
 
     private ?PHPMailer $mailer = null;
-    private array $config;
     private array $templatesCache = [];
 
-    public function __construct(array $config = [])
+    /**
+     * Настройки SMTP
+     */
+    private function configSMTP()
     {
         // Для избежания создания экземпляра при каждом создании объекта Email
         if ($this->mailer === null) {
+
             // true - при ошибки, будет выброшено исключение PHPMailer\Exception
             $this->mailer = new PHPMailer(true);
         }
 
-        $this->config = $config;
-    }
-
-    /**
-     * Настройки SMTP
-     * @return void
-     */
-    private function configSMTP(): void
-    {
         // Метод указывает, что используется SMTP-сервер для отправки писем
         $this->mailer->isSMTP();
 
@@ -50,13 +44,12 @@ class Email
             $this->mailer->Password = $this->config['password'];
         }
 
-        // Cообщения об ошибках
+        // Отображение сообщения об ошибках на русском
         $this->mailer->setLanguage('ru');
     }
 
     /**
      * Настройка отправки письма
-     * @return void
      */
     private function configSending(): void
     {
@@ -70,54 +63,34 @@ class Email
         $this->mailer->isHTML(true);
     }
 
-
     /**
+     * Отправка на почту
      * @throws Exception
      */
-    public function sendEmail(string $email, array $data): array
+    public function sendEmail($data): void
     {
-        //try {
+        try {
             $this->configSMTP();
 
             // Отправитель и получатель
             if (!empty($this->config['fromAddress'])) {
-
                 $this->mailer->setFrom($this->config['fromAddress'], 'User API');
-                $this->mailer->addAddress($email);
-
+                $this->mailer->addAddress($data['email']);
             }
-
             $this->configSending();
 
             $this->mailer->Body = $this->renderTemplate($data);
 
             // Отправка письма
-            if (!$this->mailer->send()) {
-                die(json_encode("При отправке письма произошла ошибка: {$this->mailer->ErrorInfo}", JSON_UNESCAPED_UNICODE));                //die(json_encode("При отправке письма произошла ошибка: {$this->mailer->ErrorInfo}", JSON_UNESCAPED_UNICODE));
+            $this->mailer->send();
 
-            }
-
-        //} catch (Exception $e) {
-            return [
-                'error' => true,
-                'message' => "Ошибка при отправке... {$this->mailer->ErrorInfo}",
-                //'error_code' => $e->getCode()
-            ];
-        //}
-
-        //return [
-        //    'error' => true,
-        //    'message' => "При отправке письма произошла ошибка: {$this->mailer->ErrorInfo} $e->getCode(), {$e}"
-        //];
-
-        die(json_encode("123При отправке письма произошла ошибка: {$this->mailer->ErrorInfo}", JSON_UNESCAPED_UNICODE));                //die(json_encode("При отправке письма произошла ошибка: {$this->mailer->ErrorInfo}", JSON_UNESCAPED_UNICODE));
-
+        } catch (Exception $e) {
+            throw new Exception($this->mailer->ErrorInfo);
+        }
     }
 
     /**
      * Получение HTML-шаблона для письма из локального кэша или файла
-     * @param array $data
-     * @return string
      */
     private function renderTemplate(array $data): string
     {
@@ -134,6 +107,8 @@ class Email
         }
 
         // Замена переменных в шаблоне
-        return str_replace(['{{login}}', '{{pwdSend}}'], [$data['login'], $data['pwdSend']], $this->templatesCache[$templatePath]);
+        return str_replace(
+            ['{{login}}', '{{pwd}}'], [$data['login'], $data['pwd']], $this->templatesCache[$templatePath]
+        );
     }
 }

@@ -7,43 +7,34 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class CreateController extends AbstractController
 {
+    const SLUG_MSG = 'register';
+    const CHAR_COUNT = 12;
+
     /**
      * @throws \Exception
      */
     public function run(): Response
     {
-        // 1
+        // Получение данных клиента
         // request = $this->request->getParsedBody();
-        $request = [
-            'login' => "Sp2wN45",
-            'email' => "yurkesson45@yandex.by",
-        ];
+        $request = ['login' => "Sp2wN499", 'email' => "sviridenkoanzela8@gmail.com",]; // Для отладки
 
-        // 2
-        $error = $this->validClass->validated($request, $this->validate['rules']['signUp']);
+        // Обработка данных клиента
+        $message = $this->validMod->validated($request, $this->validate['rules']['signUp'] ?? '');
 
-        if (!$error['error']) {
+        // Если нет сообщения, то значит ошибок при валидации нет
+        if (empty($message)) {
+            // Генерация пароля
+            $request['pwd'] = $this->genMod->password(self::CHAR_COUNT);
 
-            // 3 Генерация пароля
-            //$passwordSend = $this->genClass->password(12);
-            $passwordSend = "123";
-
+            // Добавление нового клиента в БД
             $this->userRepo->insertOrUpdate($request);
-            $this->dd('--------------------');
 
-            // 5 Отправка письма с паролем
-            $send = $this->mailClass->sendEmail($request['email'],
-                [
-                    'login' => $request['login'],
-                    'pwdSend' => $passwordSend
-                ]);
+            // Отправка письма с паролем новому клиенту
+            $this->mailMod->sendEmail($request);
 
-            $this->dd($send);
-
-            return $this->responseJson([
-                'message' => "Регистрация прошла успешно. Пароль был отправлен на {$request['email']}"
-            ], 201);
+            return $this->respondSuccess(201, self::SLUG_MSG, $request);
         }
-        return $this->responseJson($error, 400);
+        return $this->respondError(400, $message);
     }
 }
