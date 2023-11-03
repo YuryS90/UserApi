@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules;
+namespace App\Modules\Main;
 
 use App\Common\ContainerTrait;
 use App\Common\ServiceTrait;
 
-class MainModule
+class Module
 {
     use ContainerTrait, ServiceTrait;
 }

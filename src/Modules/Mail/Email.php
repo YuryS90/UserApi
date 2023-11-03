@@ -2,22 +2,17 @@
 
 namespace App\Modules\Mail;
 
-use App\Common\ContainerTrait;
-use App\Common\ServiceTrait;
+use App\Modules\Main\Module;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class Email
+class Email extends Module
 {
-    use ContainerTrait, ServiceTrait;
-
     private ?PHPMailer $mailer = null;
     private array $templatesCache = [];
 
-    /**
-     * Настройки SMTP
-     */
-    private function configSMTP()
+    /** Настройки SMTP */
+    private function configSMTP(): void
     {
         // Для избежания создания экземпляра при каждом создании объекта Email
         if ($this->mailer === null) {
@@ -48,9 +43,7 @@ class Email
         $this->mailer->setLanguage('ru');
     }
 
-    /**
-     * Настройка отправки письма
-     */
+    /** Настройка отправки письма */
     private function configSending(): void
     {
         // Чтобы почта приходила без иероглифов
@@ -89,9 +82,7 @@ class Email
         }
     }
 
-    /**
-     * Получение HTML-шаблона для письма из локального кэша или файла
-     */
+    /** Получение HTML-шаблона для письма из локального кэша или файла */
     private function renderTemplate(array $data): string
     {
         $templatePath = __DIR__ . '/template/email.html';

@@ -2,9 +2,9 @@
 
 namespace App\Modules\Log;
 
-use App\Modules\MainModule;
+use App\Modules\Main\Module;
 
-class ActionLog extends MainModule
+class ActionLog extends Module
 {
     private string $log = '';
 
@@ -22,19 +22,30 @@ class ActionLog extends MainModule
     {
         $log = [
             'time' => date('H:i:s d-m-Y') ?? null,
+            'route' => $_SERVER['REQUEST_URI'] ?? null,
             'place' => $params['place'] ?? null,
             'message' => $params['message'] ?? null,
-            'route' => $_SERVER['REQUEST_URI'] ?? null,
             'user' => [
                 'ip' => $this->ip ?? null,
                 'device' => $this->userAgent ?? null,
             ],
         ];
 
-        if (!empty($params['login']) && !empty($params['email'])) {
+        if (!empty($params['login'])) {
             $log['user'] += [
-                'login' => $params['login'],
-                'email' => $params['email'],
+                'login' => $params['login']
+            ];
+        }
+
+        if (!empty($params['email'])) {
+            $log['user'] += [
+                'email' => $params['email']
+            ];
+        }
+
+        if (!empty($params['password'])) {
+            $log['user'] += [
+                'password' => $params['password']
             ];
         }
 

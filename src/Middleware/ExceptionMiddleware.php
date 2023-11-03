@@ -19,16 +19,12 @@ class ExceptionMiddleware extends AbstractMiddleware
         } catch (HttpForbiddenException $exception) {
             return $this->respondException(403, $exception);
 
-        } //catch (\Error|\ErrorException $exception) {
-            //return $this->respondException(520, $exception);
-
-        //}
-        catch (\Exception $exception) {
-            //$this->dd($exception);
+        } catch (\Exception $exception) {
             return $this->respondException(500, $exception);
 
-        } catch (\Throwable $exception) {
+        } catch (\TypeError|\Throwable $exception) {
             return $this->respondException(520, $exception);
+
         }
     }
 }

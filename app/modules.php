@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 
-/**
- * Регистрация модулей
- */
+/** Регистрация модулей */
 return [
 
-    'validMod' => function (ContainerInterface $container) {
-        return new \App\Modules\Validator($container);
+    //'validMod' => function (ContainerInterface $container) {
+    'validMod' => function () {
+        //return new \App\Modules\Validator($container, $container->get('validate')['rules']);
+        return new \App\Modules\Validate\Validator();
     },
 
     'genMod' => function (ContainerInterface $container) {
@@ -22,6 +22,10 @@ return [
 
     'logMod' => function (ContainerInterface $container) {
         return new \App\Modules\Log\ActionLog($container);
+    },
+
+    'authMod' => function (ContainerInterface $container) {
+        return new \App\Modules\Auth($container);
     },
 
 ];

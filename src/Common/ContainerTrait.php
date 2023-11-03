@@ -10,10 +10,10 @@ trait ContainerTrait
 {
     use HelperTrait;
 
-    private ContainerInterface $container;
-    private array $config;
+    protected ContainerInterface $container;
+    protected array $config;
 
-    public function __construct(ContainerInterface $container, $config = [])
+    public function __construct(ContainerInterface $container, array $config = [])
     {
         $this->container = $container;
         $this->config = $config;
@@ -24,7 +24,7 @@ trait ContainerTrait
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if (!$this->container->has($name)) {
             return null;
