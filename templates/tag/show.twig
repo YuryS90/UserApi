@@ -1,0 +1,62 @@
+{% extends "./layouts/main.twig" %}
+
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Тег</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('home') }}">Главная</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('tag.index') }}">Теги</a></li>
+                        <li class="breadcrumb-item active">{{ tag.title }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex p-3">
+                            <div class="mr-3">
+                                <a href="{{ url_for('tag.edit', { 'tag': tag.id }) }}"
+                                   class="btn btn-success">Редактировать</a>
+                            </div>
+
+                            <form action="{{ url_for('tag.delete', { 'tag': tag.id }) }}" method="post">
+                                {{ csrf_field() | raw }}
+                                <input type="hidden" name="_METHOD" value="DELETE">
+                                <input type="submit" class="btn btn-danger" value="Удалить">
+                            </form>
+                        </div>
+
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <tbody>
+                                <tr>
+                                    <td>ID</td>
+                                    <td>{{ tag.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Наименование</td>
+                                    <td>{{ tag.title }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

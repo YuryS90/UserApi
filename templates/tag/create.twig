@@ -1,0 +1,42 @@
+{% extends "./layouts/main.twig" %}
+
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Добавить тег</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('home') }}">Главная</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('tag.index') }}">Теги</a></li>
+                        <li class="breadcrumb-item active">Добавление</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <form id="quickForm" novalidate="novalidate"
+                      action="{{ url_for('tag.store') }}" method="post">
+
+                    <div class="form-group">
+                        {{ csrf_field() | raw }}
+                        <input type="text" name="title" class="form-control" placeholder="Наименование">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Добавить">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
