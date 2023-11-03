@@ -1,0 +1,74 @@
+{% extends "./layouts/main.twig" %}
+{#  "id" => "№"
+  "email" => "Уникальная почта"
+  "password" => "Пароль"
+  "name" => "Имя"
+  "address" => "Адрес"
+  "is_del" => "Удалён?"
+  "is_email" => "Почта подтверждена?"
+  "roles_id" => "Роль"
+  "created" => "Дата создания"
+  "updated" => "Дата изменения" #}
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Добавить пользователя</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('home') }}">Главная</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('user.index') }}">Пользователи</a></li>
+                        <li class="breadcrumb-item active">Добавление</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <form id="quickForm" novalidate="novalidate"
+                      action="{{ url_for('user.store') }}" method="post">
+                    {{ csrf_field() | raw }}
+
+                    <div class="form-group">
+                        <input type="email" name="email" class="form-control" placeholder="Введите email">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="password" class="form-control" placeholder="Введите пароль">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control" placeholder="Введите имя">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="address" class="form-control" placeholder="Введите адрес">
+                    </div>
+
+                    <div class="form-group">
+                        <select name="roles_id" class="custom-select form-control-border">
+                            <option disabled selected>Выбрать роль:</option>
+                            {% for roleId in roles %}
+                                <option {{ roleId.code == 'admin' ? ' selected' : '' }}
+                                        value="{{ roleId.idRole }}">{{ roleId.nameRole }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Добавить">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}

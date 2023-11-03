@@ -4,37 +4,28 @@ namespace App\Controllers\User;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Views\Twig;
 
 class CreateController extends AbstractController
 {
-    const SLUG_MSG = 'register';
-    const CHAR_COUNT = 12;
-
-    /**
-     * @throws \Exception
-     */
-    public function run(): Response
+    protected function run(): Response
     {
-        // Получение данных клиента
-        // request = $this->request->getParsedBody();
-        $request = ['login' => "Sp2wN499", 'email' => "sviridenkoanzela8@gmail.com",]; // Для отладки
+        // В Laravel есть метод old, которе испл в инпуте атрибута value
+        // value="{{old('age')}}" name="age" - если какое из полей прошло валидацию
+        // то делаем чтобы пользователь не вводил дважды допущенную инфу
+        // В валидации стоит confirmed - это означает что обязательно должны быть поля
+        // У первого в инпуте должно name="password_confirmation", у второго инпута
+        // name="password", т.е. у первого должно быть добавлено _confirmation
+        // В шаблоне edit убрать поля с паролем, уникальные - с мылом, логином
+        // В шаблоне index ссылку на show делаем по имени (логину)
 
-        // Обработка данных клиента
-        $message = $this->validMod->validated($request, $this->validate['rules']['signUp'] ?? '');
 
-        // Если нет сообщения, то значит ошибок при валидации нет
-        if (empty($message)) {
-            // Генерация пароля
-            $request['pwd'] = $this->genMod->password(self::CHAR_COUNT);
+        // Получить роли
+        $roles = $this->roleRepo->filter([]);
 
-            // Добавление нового клиента в БД
-            $this->userRepo->insertOrUpdate($request);
-
-            // Отправка письма с паролем новому клиенту
-            $this->mailMod->sendEmail($request);
-
-            return $this->respondSuccess(201, self::SLUG_MSG, $request);
-        }
-        return $this->respondError(400, $message);
+        $view = Twig::fromRequest($this->request);
+        return $view->render($this->response, 'user/create.twig', [
+            'roles' => $roles
+        ]);
     }
 }
