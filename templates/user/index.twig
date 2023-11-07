@@ -1,14 +1,5 @@
 {% extends "./layouts/main.twig" %}
-{#  "id" => "№"
-  "email" => "Уникальная почта"
-  "password" => "Пароль"
-  "name" => "Имя"
-  "address" => "Адрес"
-  "is_del" => "Удалён?"
-  "is_email" => "Почта подтверждена?"
-  "roles_id" => "Роль"
-  "created" => "Дата создания"
-  "updated" => "Дата изменения" #}
+
 {% block content %}
     <div class="content-header">
         <div class="container-fluid">
@@ -54,8 +45,8 @@
                                                 {{ user.email }}</a></td>
                                         <td>{{ user.name }}</td>
                                         <td>{{ user.address }}</td>
-                                        <td>{{ user.rolesId }}</td>
-                                        <td>{{ user.isEmail }}</td>
+                                        <td>{{ user.roles_id }}</td>
+                                        <td>{{ user.is_email }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

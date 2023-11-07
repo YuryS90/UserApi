@@ -8,26 +8,32 @@ use Slim\Views\Twig;
 
 class UpdateController extends AbstractController
 {
+    private string $template = 'main/index.twig';
+
     protected function run(): Response
     {
+        $this->dd($this->args);
+
+        // TODO
+        //      Проверка на то если пользователя нет в БД, например, если в args будет 100000,
+        //       то выбросить исключение или 404
+        //      Проверить $id на 0
+        //      Обработать пришедшие данные! $request и $this->args
 
         $request = $this->request->getParsedBody();
-$this->dd($request);
-//  "_METHOD" => "PATCH"
-//  "csrf_name" => "csrf654379d2874fe"
-//  "csrf_value" => "qzL12HYng94jjgq49Vr7nUH8pFw9wzp6+r7VmJw/SpyYUMO8EBW05hO2M96Ub8modciROAX6WBifjO2q/ghyrg=="
+
+        // Исключаем ключи
+        // array_flip() - значения становятся ключами
+        $unsetValue = ['_METHOD', 'csrf_name', 'csrf_value'];
+        $request = array_diff_key($request, array_flip($unsetValue));
+
+        $this->dd($request);
 
 
-        unset($request['_METHOD']);
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
         // Убираем возможность менять пароль, мыло и логин,
         // а валидируем оставшиеся поля
         //$data = $this->validate($request)
 
-        ////  "name" => "ОЛег"
-        ////  "address" => "Чапаева"
-        ////  "roles_id" => "1"
 
         // обновлем в бд
         $this->userRepo->insertOrUpdate([
@@ -42,7 +48,7 @@ $this->dd($request);
 
         $view = Twig::fromRequest($this->request);
 
-        return $view->render($this->response, 'main/index.twig', [
+        return $view->render($this->response, $this->template, [
             'user' => $request,
         ]);
     }

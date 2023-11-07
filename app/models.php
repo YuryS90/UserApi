@@ -26,4 +26,8 @@ return [
         return new \App\Models\Color\Repo($container);
     },
 
+    'schemaRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Schema\Repo($container);
+    },
+
 ];

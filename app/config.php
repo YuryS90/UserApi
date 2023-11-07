@@ -91,6 +91,8 @@ return [
         ]
     ],
 
+    'roles' => [1 => 'Админ', 'Менеджер', 'Пользователь'],
+
     'paths' => [
         'log' => [
             'error' => __DIR__ . '/../src/Modules/Log/storage/error.log',

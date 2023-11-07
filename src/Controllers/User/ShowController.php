@@ -8,48 +8,34 @@ use Slim\Views\Twig;
 
 class ShowController extends AbstractController
 {
+    private string $template = 'user/show.twig';
+
     protected function run(): Response
     {
+        $id = (int)$this->args['user'];
+
+        // TODO
+        //      Проверка на то если пользователя нет в БД, например, если в args будет 100000,
+        //       то выбросить исключение или 404
+        //      Проверить $id на 0
+        //      Обработать пришедшие данные! $request и $this->args
+
         // По аргументу получаем данные о пользователе
         $user = $this->userRepo->filter([
-            'id' => $this->args['user'],
-            'single' => true
-        ]);
+                'fields' => ['id', 'email', 'name', 'address', 'roles_id', 'is_email'],
+                'id' => $id,
+                'joinRole' => [
+                    'fields' => ['id_role', 'name_role'],
+                ],
+                'single' => true
+            ]) ?? [];
 
-
-        if ($user['rolesId'] === 1) {
-            $user['rolesId'] = 'Админ';
-        }
-
-        if ($user['rolesId'] === 2) {
-            $user['rolesId'] = 'Менеджер';
-        }
-        if ($user['rolesId'] === 3) {
-            $user['rolesId'] = 'Пользователь';
-        }
-        if ($user['isEmail'] == 0) {
-            $user['isEmail'] = 'Нет';
-        } else {
-            $user['isEmail'] = 'Да';
-        }
-
-        $columns = $this->db->showColumns('users');
-        $fields = [];
-        foreach ($columns as $column) {
-            $fields[$column['Field']] = $column['Comment'];
-            if ($fields['password'] && $fields['is_del'] && $fields['created'] && $fields['updated']) {
-                unset($fields['password']);
-                unset($fields['is_del']);
-                unset($fields['created']);
-                unset($fields['updated']);
-            }
-        }
 
         $view = Twig::fromRequest($this->request);
 
-        return $view->render($this->response, 'user/show.twig', [
+        return $view->render($this->response, $this->template, [
             'user' => $user,
-            'fields' => $fields,
+            'fields' => $this->fields ?? [],
         ]);
     }
 }

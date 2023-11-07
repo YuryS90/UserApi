@@ -10,5 +10,6 @@ return function ($app)
     $app->group('/categories', include 'app/routes/category/category.php');
     $app->group('/tags', include 'app/routes/tag/tag.php');
     $app->group('/colors', include 'app/routes/color/color.php');
-    $app->group('/users', include 'app/routes/user/user.php');
+    $app->group('/users', include 'app/routes/user/user.php')
+        ->add('fieldsMiddleware');
 };

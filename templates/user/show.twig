@@ -42,30 +42,14 @@
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap">
                                 <tbody>
-                                <tr>
-                                    <td>{{ fields.id }}</td>
-                                    <td>{{ user.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ fields.email }}</td>
-                                    <td>{{ user.email }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ fields.name }}</td>
-                                    <td>{{ user.name }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ fields.address }}</td>
-                                    <td>{{ user.address }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ fields.roles_id }}</td>
-                                    <td>{{ user.rolesId }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ fields.is_email }}</td>
-                                    <td>{{ user.isEmail }}</td>
-                                </tr>
+
+                                {% for key, value in user %}
+                                    <tr>
+                                        <th>{{ fields[key] }}</th>
+                                        <td>{{ value }}</td>
+                                    </tr>
+                                {% endfor %}
+
                                 </tbody>
                             </table>
                         </div>

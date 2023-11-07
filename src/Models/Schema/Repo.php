@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Models\Role;
+namespace App\Models\Schema;
 
 use App\Models\Model;
 
 class Repo extends Model
 {
-    const TABLE = 'user_roles';
+    const TABLE = 'information_schema.COLUMNS';
+    const TABLE_USERS = 'users';
+    const DB = 'user_api';
 
-    /**
-     * Добавить или обновить данные
-     * @throws \ErrorException
-     */
     public function insertOrUpdate(array $params): void
     {
-        $this->db->insert(self::TABLE, $params, true);
+        //$this->db->insert(self::TABLE, $params, true);
     }
 
     /**
@@ -28,10 +26,23 @@ class Repo extends Model
 
         $q = $this->db->build("SELECT {$fields} FROM " . self::TABLE);
 
-        if (!$list = $q->exec()->listCamelCase('id_role')) {
+        if ($params['TABLE_SCHEMA']) {
+            $q->where('TABLE_SCHEMA=%s', self::DB);
+        }
+
+        if ($params['TABLE_NAME']) {
+            $q->where('TABLE_NAME=%s', self::TABLE_USERS);
+        }
+
+        if (!empty($params['COLUMN_NAME'])) {
+            $q->where('COLUMN_NAME NOT IN(%ls)', $params['COLUMN_NAME']);
+        }
+
+        if (!$list = $q->exec()->listCamelCase('COLUMN_COMMENT')) {
             return null;
         }
 
         return !empty($params['single']) ? current($list) : $list;
     }
+
 }

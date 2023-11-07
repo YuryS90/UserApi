@@ -8,42 +8,33 @@ use Slim\Views\Twig;
 
 class EditController extends AbstractController
 {
+    private string $template = 'user/edit.twig';
+
     protected function run(): Response
     {
-        // Попробывать выполнить чтобы не получать отдельно роли
-        //SELECT email, name, address, is_email, name_role
-        //FROM user_roles, users
-        //WHERE roles_id = id_role
-        //AND email = 'sviridenkoanzela8@gmail.com'
-        //AND is_del = 1;
+        $id = (int)$this->args['user'];
 
+        // TODO
+        //      Проверка на то если пользователя нет в БД, например, если в args будет 100000,
+        //       то выбросить исключение или 404
+        //      Проверить $id на 0
+        //      Обработать пришедшие данные! $request и $this->args
 
-        $this->dd($this->request, 123, $this->args);
-
-        //  #attributes: array:8 [▼
-        //    "csrf_name" => "csrf6544cb52c0218"
-        //    "csrf_value" => "0hg7y5aoA7qe0LXFYtQBHzg+FBr815cCDjUCTRnrAji3K16opZEyg6+zjfUHsGcnWwctL8/h82BqBWEpKNMxWg=="
-        //    "__routeParser__" => Slim\Routing\RouteParser {#30 ▶}
-        //    "__routingResults__" => Slim\Routing\RoutingResults {#168 ▶}
-        //    "__route__" => Slim\Routing\Route {#140 ▶}
-        //    "view" => Slim\Views\Twig {#39 ▶}
-        //    "__basePath__" => ""
-        //    "user" => "6"
-        //  ]
-
-        // По аргументу получаем данные об этой категории
+        // По аргументу получаем данные о пользователе
         $user = $this->userRepo->filter([
-            'fields' => ['email', 'name', 'address', 'is_email', 'name_role']
-            //'id' => $this->args['user'],
-            //'single' => true
-        ]);
+                'fields' => ['id', 'name', 'address', 'roles_id'],
+                'id' => $id,
+                'joinRole' => [
+                    'fields' => ['id_role', 'name_role'],
+                ],
+                'single' => true
+            ]) ?? [];
 
-        // Получить все роли
         $roles = $this->roleRepo->filter([]);
 
         $view = Twig::fromRequest($this->request);
-//$this->dd($user, $roles);
-        return $view->render($this->response, 'user/edit.twig', [
+
+        return $view->render($this->response, $this->template, [
             'user' => $user,
             'roles' => $roles,
         ]);

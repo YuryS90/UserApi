@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 
-/**
- * Регистрация промежуточных ПО
- */
+/** Регистрация промежуточных ПО */
 return [
 
     'exceptionMiddleware' => function (ContainerInterface $container) {
@@ -14,6 +12,10 @@ return [
 
     'serverMiddleware' => function (ContainerInterface $container) {
         return new App\Middleware\ServerMiddleware($container);
+    },
+
+    'fieldsMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\FieldsMiddleware($container);
     },
 
 ];

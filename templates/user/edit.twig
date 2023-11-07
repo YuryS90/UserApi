@@ -32,32 +32,25 @@
                     <input type="hidden" name="_METHOD" value="PATCH">
                     {{ csrf_field() | raw }}
 
-                    {#                    <div class="form-group"> #}
-                    {#                        <input type="email" name="email" class="form-control" value="{{ user.email }}" placeholder="Введите email"> #}
-                    {#                    </div> #}
-
-                    {#                    <div class="form-group"> #}
-                    {#                        <input type="text" name="password" class="form-control" placeholder="Введите пароль"> #}
-                    {#                    </div> #}
-
                     <div class="form-group">
-                        <input type="text" name="name" class="form-control" value="{{ user.name }}"
-                               placeholder="Введите имя">
+                        <input type="text" name="name" class="form-control"
+                               value="{{ user.name }}" placeholder="Введите имя">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="address" class="form-control" value="{{ user.address }}"
-                               placeholder="Введите адрес">
+                        <input type="text" name="address" class="form-control"
+                               value="{{ user.address }}" placeholder="Введите адрес">
                     </div>
 
                     <div class="form-group">
                         <select name="roles_id" class="custom-select form-control-border">
-                            <option disabled selected>Выбрать роль:</option>
+
                             {% for role in roles %}
-                                <option {{ (role.idRole == user.rolesId) ? ' selected' : '' }}
-                                        value="{{ user.rolesId }}">{{ role.nameRole }}
+                                <option value="{{ role.nameRole }}" {{ role.nameRole == user.roles_id ? 'selected' : '' }}>
+                                    {{ role.nameRole }}
                                 </option>
                             {% endfor %}
+
                         </select>
                     </div>
 
