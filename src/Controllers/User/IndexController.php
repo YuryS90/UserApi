@@ -4,13 +4,23 @@ namespace App\Controllers\User;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
+/**
+ * @property mixed|null $userRepo
+ */
 class IndexController extends AbstractController
 {
     private string $template = 'user/index.twig';
 
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
     protected function run(): Response
     {
         // Получаем список юзеров, которые не удалены

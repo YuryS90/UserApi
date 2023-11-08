@@ -17,8 +17,25 @@ class Validator
 
     //protected array $errors = [];
 
-    public function validate(array $data, string $slug)
+    public function validate(array $data, string $slug = '')
     {
+        //$this->dd(array_keys($data), $data, 123);
+        //  "email" => "sviridenko@gmail.com"
+        //  "password" => "12345678"
+        //  "password_confirmation" => ""
+        //  "name" => "Анжела"
+        //  "address" => "Чкалова 49"
+        //  "roles_id" => "1"
+
+        if (isset($data['password_confirmation'])) {
+            $this->dd(1);
+        }
+        $this->dd(2);
+
+        // Валидация по ключу
+        // Например $data['email'] имеет ключ email
+        // Значит по правилу email
+        // ПРоверка на существование
         $payload = [
             'data' => $data ?? [],
             'rules' => $this->rules()[$slug] ?? [],
@@ -36,7 +53,6 @@ class Validator
             // Правила для регистрации
             'register' => [
                 //'login' => 'required|login|min:5|max:50|unique:users,login',
-                'login' => 'unique:users,login',
                 'email' => 'required|string|email|min:5|max:255|unique:users,email',
             ],
             // Правила для авторизации
@@ -56,7 +72,6 @@ class Validator
             $data = $payload['data'][$field] ?? null;
             // Разбиваем строку, напр. "required|string|max:255"
             $rules = explode('|', $value);
-
 
             foreach ($rules as $rule) {
 

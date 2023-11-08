@@ -6,14 +6,14 @@ use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 
+/**
+ * @property mixed|null $userRepo
+ */
 class UpdateController extends AbstractController
 {
-    private string $template = 'main/index.twig';
-
     protected function run(): Response
     {
-        $this->dd($this->args);
-
+        $id = (int)$this->args['user'];
         // TODO
         //      Проверка на то если пользователя нет в БД, например, если в args будет 100000,
         //       то выбросить исключение или 404
@@ -22,34 +22,23 @@ class UpdateController extends AbstractController
 
         $request = $this->request->getParsedBody();
 
-        // Исключаем ключи
+        //$data = $this->validate($request)
+
+        // Исключаем лишние ключи
         // array_flip() - значения становятся ключами
         $unsetValue = ['_METHOD', 'csrf_name', 'csrf_value'];
         $request = array_diff_key($request, array_flip($unsetValue));
 
-        $this->dd($request);
-
-
-        // Убираем возможность менять пароль, мыло и логин,
-        // а валидируем оставшиеся поля
-        //$data = $this->validate($request)
-
-
-        // обновлем в бд
+        // Обновляем в БД, передав id
         $this->userRepo->insertOrUpdate([
-            'id' => $this->args['user'],
-            'name' => $request['name'],
-            'address' => $request['address'],
-            'roles_id' => $request['roles_id'],
+            'id' => $id,
+            'name' => $request['name'] ?? null,
+            'address' => $request['address'] ?? null,
+            'roles_id' => $request['roles_id'] ?? null,
         ]);
 
-        $id = $this->args['id'] = $this->args['user'];
-        $request['id'] = $id;
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, $this->template, [
-            'user' => $request,
-        ]);
+        return $this->response
+            ->withHeader('Location', '/users')
+            ->withStatus(302);
     }
 }

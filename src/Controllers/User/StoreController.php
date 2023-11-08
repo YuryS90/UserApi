@@ -9,17 +9,29 @@ class StoreController extends AbstractController
 {
     protected function run(): Response
     {
+        // В валидации стоит confirmed - это означает что обязательно должны быть поля
+        // У первого в инпуте должно name="password_confirmation", у второго инпута
+        // name="password", т.е. у первого должно быть добавлено _confirmation
+        // Решение сохранять успешные данные в сессию под ключом почты
+
         // Приходит request, который валидируем на правило required
         $request = $this->request->getParsedBody();
 
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
+        //$this->dd($request);
+        // Исключаем лишние ключи
+        // array_flip() - значения становятся ключами
+        $unsetValue = ['_METHOD', 'csrf_name', 'csrf_value'];
+        $request = array_diff_key($request, array_flip($unsetValue));
+        //$this->dd();
+        // "email" => "sviridenko@gmail.com"
+        //  "password" => "12345678"
+        //  "password_confirmation" => ""
+        //  "name" => "Анжела"
+        //  "address" => "Чкалова 49"
+        //  "roles_id" => "1"
 
-        //  "email" => "sviridenkoanzela8@gmail.com"
-        //  "password" => "11111111"
-        //  "name" => "Юрий"
-        //  "address" => "DF"
-        //  "role" => "admin"
+
+        $this->validated($request);
 
         // Если не почта существует, то при добавлении идёт перезапись...
         // Валидация на уникальность и всё остальное
@@ -27,7 +39,6 @@ class StoreController extends AbstractController
 
         // Добавить признак уникальности по мылу и логину firstOrCreate([])
         // Пароль валидировать на confirmed
-
 
         // Добавление в БД...
         $this->userRepo->insertOrUpdate($request);
