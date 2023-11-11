@@ -3,16 +3,20 @@
 namespace App\Modules\Validate;
 
 use Exception;
+use Psr\Container\ContainerInterface;
 
 class ValidateFactory
 {
     // Регистрация правил
     private static array $rules = [
-        'required' => ['class' => \App\Modules\Validate\Rules\Required::class],
-        'login' => ['class' => \App\Modules\Validate\Rules\Login::class],
-        'min' => ['class' => \App\Modules\Validate\Rules\Min::class],
-        'max' => ['class' => \App\Modules\Validate\Rules\Max::class],
-        'unique' => ['class' => \App\Modules\Validate\Rules\Unique::class],
+        'required' => ['class' => \App\Modules\Validate\Rules\CheckForRequired::class],
+        'string' => ['class' => \App\Modules\Validate\Rules\CheckForStr::class],
+        'integer' => ['class' => \App\Modules\Validate\Rules\CheckForInt::class],
+        'email' => ['class' => \App\Modules\Validate\Rules\CheckForEmail::class],
+        'min' => ['class' => \App\Modules\Validate\Rules\CheckForMin::class],
+        'max' => ['class' => \App\Modules\Validate\Rules\CheckForMax::class],
+        'confirmed' => ['class' => \App\Modules\Validate\Rules\CheckForConfirm::class],
+        'unique' => ['class' => \App\Modules\Validate\Rules\CheckForUnique::class],
     ];
 
     /** @throws Exception */

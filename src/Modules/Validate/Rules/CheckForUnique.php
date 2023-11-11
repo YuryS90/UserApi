@@ -4,10 +4,11 @@ namespace App\Modules\Validate\Rules;
 
 use App\Modules\Validate\AbstractValidate;
 
-class Unique extends AbstractValidate
+class CheckForUnique extends AbstractValidate
 {
-    public function validate(string $data, array $params = []): bool
+    public function validate(string $data, array $params = [], $dataConfirm = ''): bool
     {
+        $this->dd($this->userRepo->filter([]), 123);
         [$table, $field] = $params;
 
         if ($table === 'users') {
@@ -18,12 +19,12 @@ class Unique extends AbstractValidate
                 'count' => true,
                 $field => trim($data)
             ];
-            $this->dd($params);
+            $this->dd($params, $this->userRepo);
 
             // Результат запроса: SELECT COUNT(*) FROM users WHERE $field = $data
             $count = $this->userRepo->filter($params);
         } else {
-            throw new Exception($this->getMessage(self::MSG_TYPE, 'table'));
+            throw new \Exception($this->getMessage(self::MSG_TYPE, 'table'));
         }
         // 0 - нет в БД, 1 - есть в БД
         return $count === 0;

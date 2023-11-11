@@ -5,12 +5,13 @@ use Psr\Container\ContainerInterface;
 
 /** Регистрация модулей */
 return [
-
-    //'validMod' => function (ContainerInterface $container) {
-    'validMod' => function () {
-        //return new \App\Modules\Validator($container, $container->get('validate')['rules']);
-        return new \App\Modules\Validate\Validator();
+    'validMod' => function (ContainerInterface $container) {
+        return new \App\Modules\Validate\Validator($container);
     },
+
+    //'validMod2' => function (ContainerInterface $container) {
+    //    return new \App\Modules\Validate\AbstractValidate($container);
+    //},
 
     'genMod' => function (ContainerInterface $container) {
         return new \App\Modules\Generator($container);
