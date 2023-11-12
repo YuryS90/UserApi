@@ -23,11 +23,13 @@ class Validator
      */
     public function validate(array $collection, string $slug = '')
     {
-       //$this->dd($this->userRepo->filter([]));
+        //$this->dd($this->userRepo->filter([]));
+
+
 
         // Нужно сохранять успешные данные в сессию под ключом почты
         $test = [
-            "email" => 'sviridenkogmail.com',
+            "email" => 'viridenkoanzela@gmail.com',
             "password" => "12345678",
             "password_confirmation" => "12345",
             //"name" => "Анжела",
@@ -84,7 +86,7 @@ class Validator
             [$ruleName, $ruleParams] = array_pad(explode(':', $rule, 2), 2, null);
 
             // Получаем объект правила через фабрику
-            $ruleClass = ValidateFactory::create($ruleName);
+            $ruleClass = ValidateFactory::create($ruleName, $this->container);
             if (!is_object($ruleClass)) {
                 throw new \Exception("Объект с правилом {$ruleName}, {$ruleClass} не создан!");
             }
@@ -105,8 +107,8 @@ class Validator
     {
         // Добавить  password size:12 |unique:users,email
         return [
-            'email' => 'required|string|email|min:5|max:255',
-            //'email' => 'unique:users,email',
+            //'email' => 'required|string|email|min:5|max:255',
+            'email' => 'unique:users,email',
             'password' => 'required|string|confirmed',
         ];
     }

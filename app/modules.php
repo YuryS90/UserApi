@@ -9,10 +9,6 @@ return [
         return new \App\Modules\Validate\Validator($container);
     },
 
-    //'validMod2' => function (ContainerInterface $container) {
-    //    return new \App\Modules\Validate\AbstractValidate($container);
-    //},
-
     'genMod' => function (ContainerInterface $container) {
         return new \App\Modules\Generator($container);
     },

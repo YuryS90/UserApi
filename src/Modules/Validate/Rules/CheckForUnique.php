@@ -8,8 +8,12 @@ class CheckForUnique extends AbstractValidate
 {
     public function validate(string $data, array $params = [], $dataConfirm = ''): bool
     {
-        $this->dd($this->userRepo->filter([]), 123);
         [$table, $field] = $params;
+
+        $q = $this->db->build("SELECT EXISTS (SELECT 1 FROM {$table} WHERE {$field} = %s)", $data);
+        $list = $q->exec()->list() ?: [];
+
+        $this->dd($list, $field);
 
         if ($table === 'users') {
 

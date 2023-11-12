@@ -20,13 +20,13 @@ class ValidateFactory
     ];
 
     /** @throws Exception */
-    public static function create(string $ruleName): ?object
+    public static function create(string $ruleName, ContainerInterface $container): ?object
     {
         $className = self::$rules[$ruleName]['class'] ?? null;
 
         if (!$className) {
             return null;
         }
-        return new $className();
+        return new $className($container);
     }
 }
