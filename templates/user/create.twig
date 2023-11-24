@@ -1,15 +1,18 @@
 {% extends "./layouts/main.twig" %}
-{#  "id" => "№"
-  "email" => "Уникальная почта"
-  "password" => "Пароль"
-  "name" => "Имя"
-  "address" => "Адрес"
-  "is_del" => "Удалён?"
-  "is_email" => "Почта подтверждена?"
-  "roles_id" => "Роль"
-  "created" => "Дата создания"
-  "updated" => "Дата изменения" #}
+
 {% block content %}
+
+
+    {% if error %}
+        <div class="card-body">
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-ban"></i> Ошибка!</h5>
+                {{ error }}
+            </div>
+        </div>
+    {% endif %}
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -38,34 +41,39 @@
                     {{ csrf_field() | raw }}
 
                     <div class="form-group">
-                        <input type="email" name="email" class="form-control" placeholder="Введите email">
+                        <input type="email" name="email" class="form-control"
+                               placeholder="Введите email" value="{{ old.email }}">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="password" class="form-control" placeholder="Введите пароль">
+                        <input type="text" name="password" class="form-control"
+                               placeholder="Введите пароль" value="{{ old.password }}">
                     </div>
 
                     <div class="form-group">
                         <input type="text" name="password_confirmation" class="form-control"
-                               placeholder="Повторите пароль">
+                               placeholder="Повторите пароль" value="{{ old.password_confirmation }}">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="name" class="form-control" placeholder="Введите имя">
+                        <input type="text" name="name" class="form-control"
+                               placeholder="Введите имя" value="{{ old.name }}">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="address" class="form-control" placeholder="Введите адрес">
+                        <input type="text" name="address" class="form-control"
+                               placeholder="Введите адрес" value="{{ old.address }}">
                     </div>
 
                     <div class="form-group">
                         <select name="roles_id" class="custom-select form-control-border">
                             <option disabled selected>Выбрать роль:</option>
-                            {% for roleId in roles %}
-                                <option {{ roleId.code == 'admin' ? ' selected' : '' }}
-                                        value="{{ roleId.idRole }}">{{ roleId.nameRole }}
-                                </option>
+
+                            {% for role in roles %}
+                                <option {{ old.roles_id == role.idRole ? ' selected' : '' }}
+                                        value="{{ role.idRole }}">{{ role.nameRole }}</option>
                             {% endfor %}
+
                         </select>
                     </div>
 

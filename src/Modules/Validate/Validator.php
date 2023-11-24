@@ -5,39 +5,20 @@ namespace App\Modules\Validate;
 use App\Common\ContainerTrait;
 use App\Common\HelperTrait;
 
-/**
- * Класс проверки правописания данных
- *
- * Сюда нужно передать валидируемые данные и слаг, чтобы выбрать соответствующие требования для валидации данных
- * В rules() добавляем правила для каждого отдельного контроллера
- */
+/** Класс проверки правописания данных */
 class Validator
 {
     use ContainerTrait, HelperTrait;
 
-    protected array $errors = [];
+    private string $error = '';
 
     /**
      * @throws \ErrorException
      * @throws \Exception
      */
-    public function validate(array $collection, string $slug = '')
+    public function validate(array $collection): string
     {
-        //$this->dd($this->userRepo->filter([]));
-
-
-
-        // Нужно сохранять успешные данные в сессию под ключом почты
-        $test = [
-            "email" => 'viridenkoanzela@gmail.com',
-            "password" => "12345678",
-            "password_confirmation" => "12345",
-            //"name" => "Анжела",
-            //"address" => "Чкалова 49",
-            //"roles_id" => "1",
-        ];
-
-        foreach ($test ?? [] as $name => $data) {
+        foreach ($collection ?? [] as $name => $data) {
             // Проверяем наличие атрибута
             if (!isset($name)) {
                 throw new \Exception('Пустая коллекция');
@@ -55,25 +36,24 @@ class Validator
             }
 
             // Если есть ошибки, прекращаем выполнение
-            if (!empty($this->errors)) {
+            if (!empty($this->error)) {
                 break;
             }
 
             // Получаем правила для атрибута
             $rules = $rules[$name];
             $confirm = "{$name}_confirmation";
-            $dataConfirm = $test[$confirm] ?? null;
+            $dataConfirm = $collection[$confirm] ?? null;
 
             // Выполняем валидацию
-            $this->execute($data, $rules, $dataConfirm);
+            $this->execute($data, $rules, $name, $dataConfirm);
         }
 
-        $this->dd($this->errors);
-        // return errorHandler($this->errors); // выводим message
+        return $this->error;
     }
 
     /** @throws \Exception */
-    public function execute(string $data, string $rules, $dataConfirm = ''): void
+    public function execute(string $data, string $rules, string $name, ?string $dataConfirm = ''): void
     {
         // Разбиваем строку, напр. "required|string|max:255"
         $rules = explode('|', $rules);
@@ -92,24 +72,28 @@ class Validator
             }
 
             // Если есть ошибки, прекращаем выполнение
-            if (!empty($this->errors)) {
+            if (!empty($this->error)) {
                 break;
             }
 
             // В каждом классе validate() возвращает bool - результат валидации
             if (!$ruleClass->validate($data, explode(',', $ruleParams), $dataConfirm)) {
-                $this->errors[] = [$ruleClass, $data, explode(',', $ruleParams)];
+                $this->error = $ruleClass->message($name, $ruleParams);
             }
         }
     }
 
     private function rules(): array
     {
-        // Добавить  password size:12 |unique:users,email
         return [
-            //'email' => 'required|string|email|min:5|max:255',
-            'email' => 'unique:users,email',
-            'password' => 'required|string|confirmed',
+            'email' => 'required|string|email|min:5|max:255|unique:users,email',
+            'password' => 'required|string|min:8|password|confirmed',
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'roles_id' => 'required|integer',
+
+            // Валидация маршрута (содержимое в "{}")
+            'user' => 'required|integer|zero|unique:users,id',
         ];
     }
 }

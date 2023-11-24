@@ -9,5 +9,7 @@ abstract class AbstractValidate
 {
     use ContainerTrait, HelperTrait;
 
-    abstract public function validate(string $data, array $params = [], $dataConfirm = ''): bool;
+    abstract public function validate(string $data, array $params = [], ?string $dataConfirm = ''): bool;
+
+    abstract public function message(string $name, ?string $param);
 }

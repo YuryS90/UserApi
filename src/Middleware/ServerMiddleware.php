@@ -4,6 +4,10 @@ namespace App\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @property string $userAgent
+ * @property mixed|string $ip
+ */
 class ServerMiddleware extends AbstractMiddleware
 {
     public function run(): ResponseInterface

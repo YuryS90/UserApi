@@ -7,29 +7,33 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * @property mixed|null $userRepo
+ * @property mixed|null $roles
  */
 class StoreController extends AbstractController
 {
+    private string $renderError = 'user/create.twig';
+
     protected function run(): Response
     {
         $request = $this->request->getParsedBody() ?? [];
 
-        // Исключаем лишние ключи sanitization()
-        // array_flip() - значения становятся ключами
-        $unsetValue = ['_METHOD', 'csrf_name', 'csrf_value'];
-        $request = array_diff_key($request, array_flip($unsetValue));
+        // Обработка данных
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
 
-        $res = $this->validated($request);
-        $this->dd($res);
+        if (!empty($error)) {
 
-        // Добавить признак уникальности по мылу и логину firstOrCreate([])
-        
+            // Значит есть недопустимые данные
+            return $this->render($this->renderError, [
+                'error' => $error,
+                'old' => $collection,
+                'roles' => $this->roles ?? [],
+            ]);
+        }
+
         // Добавление в БД
-        // Если почта существует, то при добавлении идёт перезапись...
-        $this->userRepo->insertOrUpdate($request);
+        $this->userRepo->insertOrUpdate($collection);
 
-        return $this->response
-            ->withHeader('Location', '/users')
-            ->withStatus(302);
+        return $this->redirect('/users');
     }
 }

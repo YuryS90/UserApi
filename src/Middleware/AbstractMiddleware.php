@@ -3,6 +3,7 @@
 namespace App\Middleware;
 
 use App\Common\ContainerTrait;
+use App\Common\SafetyTrait;
 use App\Common\ServiceTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -10,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 abstract class AbstractMiddleware
 {
-    use ContainerTrait, ServiceTrait;
+    use ContainerTrait, ServiceTrait, SafetyTrait;
 
     protected Request $request;
     protected RequestHandler $handler;

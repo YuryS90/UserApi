@@ -6,11 +6,10 @@ use App\Modules\Validate\AbstractValidate;
 
 class CheckForInt extends AbstractValidate
 {
-    /** @param mixed $data */
-    public function validate($data, array $params = [], $dataConfirm = ''): bool
+    public function validate(string $data, array $params = [], ?string $dataConfirm = ''): bool
     {
         // Проверяем, является ли значение целым числом
-        if (filter_var($data, FILTER_VALIDATE_INT) === false) {
+        if (!is_numeric($data)) {
             return false;
         }
 
@@ -20,5 +19,15 @@ class CheckForInt extends AbstractValidate
         }
 
         return true;
+    }
+
+    public function message(string $name, ?string $param): string
+    {
+        $messages = [
+            'roles_id' => 'Роль должна соответствовать целочисленному типу!',
+            'user' => 'Некорректный ID',
+        ];
+
+        return $messages[$name] ?? '';
     }
 }

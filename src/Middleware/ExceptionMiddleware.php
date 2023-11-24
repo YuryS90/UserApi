@@ -24,7 +24,6 @@ class ExceptionMiddleware extends AbstractMiddleware
 
         } catch (\TypeError|\Throwable $exception) {
             return $this->respondException(520, $exception);
-
         }
     }
 }

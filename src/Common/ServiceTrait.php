@@ -5,6 +5,11 @@ namespace App\Common;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Message;
 use Slim\Psr7\Response;
+use Slim\Routing\RouteContext;
+use Slim\Views\Twig;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 trait ServiceTrait
 {
@@ -16,7 +21,7 @@ trait ServiceTrait
 //        return $this->responseJson($status, $this->getResponse(false, $message));
 //    }
 //
-//    /** @return ResponseInterface|Message|Response */
+    /** @return ResponseInterface|Message|Response */
     public function respondException(int $status, object $e)
     {
         // Получаем из config сообщение по статусу
@@ -49,6 +54,53 @@ trait ServiceTrait
 //        return $this->responseJson($status, $this->getResponse(true, $message), $token);
 //    }
 //
+
+    public function getRoute(): ?\Slim\Interfaces\RouteInterface
+    {
+        $routeContext = RouteContext::fromRequest($this->request);
+
+        return $routeContext->getRoute();
+    }
+
+    public function getRouteArgument($name): ?string
+    {
+        return $this->getRoute()->getArgument($name) ?? null;
+    }
+
+    public function nameRoute(): ?string
+    {
+        return $this->getRoute()->getName();
+    }
+
+    public function getRouteArgs(): array
+    {
+        return $this->getRoute()->getArguments();
+    }
+
+    public function getPattern(): string
+    {
+        return $this->getRoute()->getPattern();
+    }
+
+    public function getMethod(): string
+    {
+        return $this->request->getMethod();
+    }
+
+
+    /**
+     * Делаем перезагрузку страницы на указанный адрес
+     * @param string $url
+     * @return Message|Response
+     */
+    public function redirect(string $url = '/')
+    {
+        $response = new Response();
+        return $response
+            ->withHeader('Location', $url)
+            ->withStatus(302);
+    }
+
     /** @return object|ResponseInterface|Message|Response */
     public function responseJson(int $status, array $data, $token = '')
     {
@@ -68,7 +120,7 @@ trait ServiceTrait
             ->withHeader('Content-Type', 'application/json; charset=UTF-8')
             ->withStatus($status);
     }
-//
+
     /** Получаем сообщение по типу: валидация, ошибка, успех и т.д. */
     public function getMessage(string $type, string $key): string
     {
@@ -81,8 +133,15 @@ trait ServiceTrait
         return $success ? ['success' => true, 'message' => $msg] : ['error' => true, 'message' => $msg];
     }
 
-    public function validated(array $request, string $slug = ''): string
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function render(string $template, array $params = []): ResponseInterface
     {
-        return $this->validMod->validate($request, $slug);
+        $view = Twig::fromRequest($this->request);
+
+        return $view->render($this->response, $template, $params);
     }
 }

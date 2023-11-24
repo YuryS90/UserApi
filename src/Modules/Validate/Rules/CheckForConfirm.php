@@ -6,9 +6,17 @@ use App\Modules\Validate\AbstractValidate;
 
 class CheckForConfirm extends AbstractValidate
 {
-    /** @param mixed $data */
-    public function validate($data, array $params = [], $dataConfirm = ''): bool
+    public function validate(string $data, array $params = [], ?string $dataConfirm = ''): bool
     {
         return $data == $dataConfirm;
+    }
+
+    public function message(string $name, ?string $param): string
+    {
+        $messages = [
+            'password' => 'Пароль должен быть подтверждён!'
+        ];
+
+        return $messages[$name] ?? '';
     }
 }

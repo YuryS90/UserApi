@@ -14,8 +14,20 @@ return [
         return new App\Middleware\ServerMiddleware($container);
     },
 
-    'fieldsMiddleware' => function (ContainerInterface $container) {
-        return new App\Middleware\FieldsMiddleware($container);
+    'getUsersOrUserMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\GetUsersOrUserMiddleware($container);
+    },
+
+    'rolesMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\GetRolesMiddleware($container);
+    },
+
+    'checkPathParameterMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\CheckPathParameterMiddleware($container);
+    },
+
+    'getUserColumnsMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\GetUserColumnsMiddleware($container);
     },
 
 ];
