@@ -94,6 +94,7 @@ class Validator
 
             // Валидация маршрута (содержимое в "{}")
             'user' => 'required|integer|zero|unique:users,id',
+            'product' => 'required|integer|zero|unique:products,id',
         ];
     }
 }

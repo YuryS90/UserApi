@@ -8,6 +8,8 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="/public/adminlte/plugins/select2/css/select2.min.css">
     <!-- Font Awesome -->
     {#    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css"> #}
     <link rel="stylesheet" href="/public/adminlte/plugins/fontawesome-free/css/all.min.css">
@@ -46,8 +48,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="/public/adminlte/dist/img/user1-128x128.jpg" alt="User Avatar"
-                                 class="img-size-50 mr-3 img-circle">
+{#                            <img src="/public/adminlte/dist/img/user1-128x128.jpg" alt="User Avatar"#}
+{#                                 class="img-size-50 mr-3 img-circle">#}
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Brad Diesel
@@ -63,8 +65,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="/public/adminlte/dist/img/user8-128x128.jpg" alt="User Avatar"
-                                 class="img-size-50 img-circle mr-3">
+{#                            <img src="/public/adminlte/dist/img/user8-128x128.jpg" alt="User Avatar"#}
+{#                                 class="img-size-50 img-circle mr-3">#}
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     John Pierce
@@ -80,8 +82,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="/public/adminlte/dist/img/user3-128x128.jpg" alt="User Avatar"
-                                 class="img-size-50 img-circle mr-3">
+{#                            <img src="/public/adminlte/dist/img/user3-128x128.jpg" alt="User Avatar"#}
+{#                                 class="img-size-50 img-circle mr-3">#}
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Nora Silvester
@@ -150,7 +152,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ url_for('product.index') }}" class="nav-link">
                             <i class="nav-icon fas fa-paw"></i>
                             <p>Продукты</p>
                         </a>
@@ -217,6 +219,9 @@
 <!-- Bootstrap 4 -->
 <script src="/public/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+<!-- Select2 -->
+<script src="/public/adminlte/plugins/select2/js/select2.full.min.js"></script>
+
 <script src="/public/adminlte/plugins/jquery-validation/jquery.validate.min.js"></script>
 <script src="/public/adminlte/plugins/jquery-validation/additional-methods.min.js"></script>
 
@@ -282,6 +287,9 @@
         });
     });
 
+    //Initialize Select2 Elements
+    $('.tags').select2()
+    $('.colors').select2()
 </script>
 </body>
 </html>

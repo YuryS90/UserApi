@@ -26,8 +26,16 @@ return [
         return new \App\Models\Color\Repo($container);
     },
 
-    'schemaRepo' => function (ContainerInterface $container) {
-        return new \App\Models\Schema\Repo($container);
+    'userFieldRepo' => function (ContainerInterface $container) {
+        return new \App\Models\User\Field\Repo($container);
+    },
+
+    'productFieldRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Product\Field\Repo($container);
+    },
+
+    'productRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Product\Repo($container);
     },
 
 ];

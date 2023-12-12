@@ -1,18 +1,23 @@
 <?php
 
-namespace App\Models\Schema;
+namespace App\Models\Product;
 
 use App\Models\Model;
 
+/**
+ * @property mixed|null $db
+ */
 class Repo extends Model
 {
-    const TABLE = 'information_schema.COLUMNS';
-    const TABLE_USERS = 'users';
-    const DB = 'user_api';
+    const TABLE = 'products';
 
+    /**
+     * Добавить или обновить данные
+     * @throws \ErrorException
+     */
     public function insertOrUpdate(array $params): void
     {
-        //$this->db->insert(self::TABLE, $params, true);
+        $this->db->insert(self::TABLE, $params, true);
     }
 
     /**
@@ -26,23 +31,20 @@ class Repo extends Model
 
         $q = $this->db->build("SELECT {$fields} FROM " . self::TABLE);
 
-        if ($params['TABLE_SCHEMA']) {
-            $q->where('TABLE_SCHEMA=%s', self::DB);
+        // Выборка либо по `id`
+        if (!empty($params['id'])) {
+            $q->where('id=%s', $params['id']);
         }
 
-        if ($params['TABLE_NAME']) {
-            $q->where('TABLE_NAME=%s', self::TABLE_USERS);
+        // Выборка по `is_del`
+        if ($params['is_del'] === 0) {
+            $q->where('is_del=%s', $params['is_del']);
         }
 
-        if (!empty($params['COLUMN_NAME'])) {
-            $q->where('COLUMN_NAME NOT IN(%ls)', $params['COLUMN_NAME']);
-        }
-
-        if (!$list = $q->exec()->listCamelCase('COLUMN_COMMENT')) {
+        if (!$list = $q->exec()->list()) {
             return null;
         }
 
         return !empty($params['single']) ? current($list) : $list;
     }
-
 }

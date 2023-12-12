@@ -1,5 +1,4 @@
 <?php
-
 use App\Exception\NotFound;
 use Slim\Csrf\Guard;
 use Slim\Exception\HttpNotFoundException;
@@ -65,6 +64,7 @@ $error = $app->addErrorMiddleware(true, true, true);
 $error->setErrorHandler(HttpNotFoundException::class, NotFound::class);
 
 $app->group('', include 'app/routes/root.php')
+    //->add('checkPathParameterMiddleware')
     ->add('serverMiddleware') // 2
     ->add('exceptionMiddleware'); // 1
 

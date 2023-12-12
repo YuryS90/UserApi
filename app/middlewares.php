@@ -15,19 +15,27 @@ return [
     },
 
     'getUsersOrUserMiddleware' => function (ContainerInterface $container) {
-        return new App\Middleware\GetUsersOrUserMiddleware($container);
+        return new \App\Middleware\Users\GetUsersOrUserMiddleware($container);
     },
 
     'rolesMiddleware' => function (ContainerInterface $container) {
-        return new App\Middleware\GetRolesMiddleware($container);
+        return new \App\Middleware\Users\GetRolesMiddleware($container);
     },
 
     'checkPathParameterMiddleware' => function (ContainerInterface $container) {
-        return new App\Middleware\CheckPathParameterMiddleware($container);
+        return new \App\Middleware\CheckPathParameterMiddleware($container);
     },
 
-    'getUserColumnsMiddleware' => function (ContainerInterface $container) {
-        return new App\Middleware\GetUserColumnsMiddleware($container);
+    'getUserFieldsMiddleware' => function (ContainerInterface $container) {
+        return new \App\Middleware\Users\GetUserFieldsMiddleware($container);
+    },
+
+    'getProductsOrProductMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\Products\GetProductsOrProductMiddleware($container);
+    },
+
+    'getProductFieldsMiddleware' => function (ContainerInterface $container) {
+        return new App\Middleware\Products\GetProductFieldsMiddleware($container);
     },
 
 ];
