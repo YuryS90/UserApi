@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Products;
 
+use App\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Получение данных для отображения таблицы с пользователями
- * @property array $fields
- * @property mixed|null $schemaRepo
+ * Получение данных для отображения таблицы с товарами
+ * @property mixed|null $productFieldRepo
+ * @property mixed|null productFields
  */
-class GetUserColumnsMiddleware extends AbstractMiddleware
+class GetProductFieldsMiddleware extends AbstractMiddleware
 {
-    const INDEX_ROUTE = 'user.index';
-    const SHOW_ROUTE = 'user.show';
+    const INDEX_ROUTE = 'product.index';
+    const SHOW_ROUTE = 'product.show';
 
     public function run(): ResponseInterface
     {
@@ -20,11 +21,11 @@ class GetUserColumnsMiddleware extends AbstractMiddleware
             $this->nameRoute() == self::SHOW_ROUTE) {
 
             // Получаем комментарии в качестве названия полей таблицы
-            $columns = $this->schemaRepo->filter([
+            $columns = $this->productFieldRepo->filter([
                     'fields' => ['COLUMN_COMMENT', 'COLUMN_NAME'],
                     'TABLE_SCHEMA' => true,
                     'TABLE_NAME' => true,
-                    'COLUMN_NAME' => ['password', 'is_del', 'created', 'updated'],
+                    'COLUMN_NAME' => ['is_del', 'created', 'updated'],
                 ]) ?? [];
 
             // Формирование в одномерный ассоциативный массив
@@ -34,14 +35,7 @@ class GetUserColumnsMiddleware extends AbstractMiddleware
             }
 
             // Обязательный порядок полей для отображения в таблице
-            $desiredOrder = [
-                "id",
-                "email",
-                "name",
-                "address",
-                "roles_id",
-                "is_email"
-            ];
+            $desiredOrder = unserialize($_ENV['PROD']);
 
             // Получаем поля в нужном порядке
             uksort($fields, function ($a, $b) use ($desiredOrder) {
@@ -51,7 +45,7 @@ class GetUserColumnsMiddleware extends AbstractMiddleware
             });
 
             // Регистрация отсортированных полей в DI
-            $this->fields = $fields;
+            $this->productFields = $fields;
         }
 
         return $this->handle();

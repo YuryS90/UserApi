@@ -6,7 +6,7 @@ use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @property mixed|null $fields
+ * @property mixed|null userFields
  * @property mixed|null $users
  */
 class IndexController extends AbstractController
@@ -17,7 +17,7 @@ class IndexController extends AbstractController
     {
         return $this->render($this->template, [
             'users' => $this->users ?? [],
-            'fields' => $this->fields ?? [],
+            'fields' => $this->userFields ?? [],
         ]);
     }
 }

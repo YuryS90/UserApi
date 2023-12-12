@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Middleware;
+namespace App\Middleware\Users;
 
+use App\Middleware\AbstractMiddleware;
 use Psr\Http\Message\ResponseInterface;
 
 /**

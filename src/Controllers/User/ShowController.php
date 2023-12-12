@@ -6,7 +6,7 @@ use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @property mixed|null $fields
+ * @property mixed|null userFields
  * @property mixed|null $user
  */
 class ShowController extends AbstractController
@@ -17,7 +17,7 @@ class ShowController extends AbstractController
     {
         return $this->render($this->template, [
             'user' => $this->user ?? null,
-            'fields' => $this->fields ?? []
+            'fields' => $this->userFields ?? []
         ]);
     }
 }
