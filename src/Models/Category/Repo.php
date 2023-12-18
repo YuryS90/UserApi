@@ -4,6 +4,9 @@ namespace App\Models\Category;
 
 use App\Models\Model;
 
+/**
+ * @property mixed|null $db
+ */
 class Repo extends Model
 {
     const TABLE = 'categories';
@@ -33,9 +36,9 @@ class Repo extends Model
             $q->where('id=%s', $params['id']);
         }
 
-        // Если COUNT()
-        if ($params['count']) {
-            return $q->exec()->result();
+        // Выборка по `is_del`
+        if ($params['is_del'] === 0) {
+            $q->where('is_del=%s', $params['is_del']);
         }
 
         if (!$list = $q->exec()->listCamelCase('id')) {

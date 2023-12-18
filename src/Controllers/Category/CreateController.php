@@ -9,9 +9,10 @@ use Slim\Views\Twig;
 /** Отображение формы на создание */
 class CreateController extends AbstractController
 {
+    private string $template = 'category/create.twig';
+
     protected function run(): Response
     {
-        $view = Twig::fromRequest($this->request);
-        return $view->render($this->response, 'category/create.twig');
+        return $this->render($this->template);
     }
 }

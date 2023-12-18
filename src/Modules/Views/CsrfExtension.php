@@ -30,8 +30,8 @@ class CsrfExtension extends TwigExtension
         $value = $this->guard->getTokenValue();
 
         return
-            "<input type='hidden' name='{$nameKey}' value='{$name}'> 
-             \t\t\t<input type='hidden' name='{$valueKey}' value='{$value}'>";
+            "<input type='hidden' name='{$nameKey}' value='{$name}'>
+             <input type='hidden' name='{$valueKey}' value='{$value}'>";
     }
 
 }

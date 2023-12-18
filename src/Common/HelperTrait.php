@@ -6,6 +6,9 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
+/**
+ * @property mixed|null logMod
+ */
 trait HelperTrait
 {
     public function debug(...$data): void

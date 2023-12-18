@@ -15,6 +15,7 @@ class IndexController extends AbstractController
 
     protected function run(): Response
     {//$this->dd($this->product);
+        //$this->dd($this->categories);
         return $this->render($this->template, [
             'users' => $this->products ?? [],
             'fields' => $this->productFields ?? [],

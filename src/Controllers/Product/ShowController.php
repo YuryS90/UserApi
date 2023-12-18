@@ -14,7 +14,7 @@ class ShowController extends AbstractController
     private string $template = 'user/show.twig';
 
     protected function run(): Response
-    {
+    {$this->dd($this->categories);
         $this->dd('show');
         return $this->render($this->template, [
             'user' => $this->user ?? null,

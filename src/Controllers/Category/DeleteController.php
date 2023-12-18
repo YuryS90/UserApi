@@ -10,6 +10,7 @@ class DeleteController extends AbstractController
 {
     protected function run(): Response
     {
+        // ПРоверить на родительскую категорию!
         // сюда прилеатает
         $this->dd($this->args, 'DeleteController');
 

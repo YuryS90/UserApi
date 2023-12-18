@@ -25,33 +25,101 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ url_for('category.create') }}" class="btn btn-primary">Добавить</a>
+                            <a href="{{ url_for('category.create') }}"
+                               class="btn btn-outline-success btn-sm">Добавить</a>
                         </div>
 
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Наименование</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                        {# Определение макроса с именем renderList, который принимает аргумент categories
+                        Макрос - фрагмент шаблона, который можно вызывать из других частей шаблона с использованием
+                        {{ _self.renderList() }}, где _self - объект, который ссылается на текущий шаблон #}
+                        {% macro renderList(categories) %}
+                            <ul class="list-group" id="category">
                                 {% for category in categories %}
-                                    <tr>
-                                        <td>{{ category.id }}</td>
-                                        <td>
-                                            <a href="{{ url_for('category.show', { 'category': category.id }) }}">
-                                                {{ (category.title) ? category.title : '___' }}</a>
-                                        </td>
-                                    </tr>
+                                    <li class="list-group-item list-group-item-light">
+                                        <a href="{{ url_for('category.show', { 'category': category.id }) }}"
+                                           class="mr-3" style="color: #020202;">
+                                            {{ category.title }}
+                                        </a>
+
+                                        <a href="#"
+                                           class="mr-2">
+                                            <i class="fas fa-plus fa-xs" style="color: #366350;"></i>
+                                        </a>
+
+                                        <a href="#" class="delete-category"
+                                           data-id="{{ (category.childs) ? '' : category.id }}">
+                                            <i class="fas fa-trash-alt fa-xs"
+                                               style="color: {{ (category.childs) ? '#020202' : '#912b2d' }}"></i>
+                                        </a>
+
+                                        {# Если у элемента есть дочерние элементы (category.childs),
+                                        то вызываем макрос renderList рекурсивно для построения вложенного списка. #}
+                                        {% if category.childs is defined and category.childs|length > 0 %}
+                                            {# Рекурсивный вызов макроса для дочерних элементов.
+                                            Макрос вызывает сам себя с новым списком дочерних элементов
+                                            в качестве аргумента (category.childs).
+                                            Условие завершения - отсутствие дочерних элементов для текущего узла. #}
+                                            {{ _self.renderList(category.childs) }}
+                                        {% endif %}
+                                    </li>
                                 {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                            </ul>
+                        {% endmacro %}
+
+                        {# Общий вызов макроса #}
+                        {{ _self.renderList(categories) }}
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Обработчик события клика по ссылке удаления
+            $('.delete-category').on('click', function (e) {
+                e.preventDefault();
+
+                let categoryId = $(this).data('id');
+
+                if (!categoryId) {
+                    // Если categoryId пуст, выводим сообщение и прерываем выполнение функции
+                    showAlert('<div class="alert alert-danger alert-dismissible">'
+                        + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'
+                        + '<h5><i class="icon fas fa-ban"></i>Ошибка!</h5>'
+                        + 'Невозможно удалить родительскую категорию'
+                        + '</div>');
+                    return;
+                }
+
+                // Создаем форму динамически
+                let form = $('<form>', {
+                    'action': '/categories/' + categoryId,
+                    'method': 'post'
+                });
+
+                form.append({{ csrf_field()|json_encode|raw }} );
+                form.append('<input type="hidden" name="_METHOD" value="DELETE">');
+
+                // Добавляем форму в тело документа и сразу отправляем
+                $('body').append(form);
+                form.submit();
+            });
+        })
+
+        function showAlert(message) {
+            let alert = $(message);
+
+            // Добавляем alert в тело документа
+            $('#category').prepend(alert);
+
+            // Закрываем alert через 3 секунды (3000 миллисекунд)
+            setTimeout(function () {
+                alert.remove();
+            }, 3000);
+        }
+    </script>
 {% endblock %}
+
