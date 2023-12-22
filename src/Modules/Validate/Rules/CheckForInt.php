@@ -25,7 +25,11 @@ class CheckForInt extends AbstractValidate
     {
         $messages = [
             'roles_id' => 'Роль должна соответствовать целочисленному типу!',
+
+            'parent_id' => 'Категория должна соответствовать целочисленному типу!',
+
             'user' => 'Некорректный ID',
+            'category' => 'Некорректный ID',
         ];
 
         return $messages[$name] ?? '';

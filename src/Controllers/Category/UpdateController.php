@@ -3,35 +3,37 @@
 namespace App\Controllers\Category;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
-/** Обновление */
+/**
+ * Обновление
+ * @property mixed|null $id
+ */
 class UpdateController extends AbstractController
 {
     protected function run(): Response
     {
         $request = $this->request->getParsedBody();
-        // валидация
-        //$data = $this->validate($request)
 
-        unset($request['_METHOD']);
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
 
-        // обновлем в бд
-        $this->categoryRepo->insertOrUpdate([
-            'id' => $this->args['category'],
-            'title' => $request['title'],
-        ]);
+        if (!empty($error)) {
+            return ResourceError::make(400, $error);
+        }
 
-        $id = $this->args['id'] = $this->args['category'];
-        $request['id'] = $id;
+        try {
+            $this->categoryRepo->insertOrUpdate([
+                'id' => $this->id ?? null,
+                'title' => $collection['title'],
+                'parent_id' => $collection['parent_id'],
+            ]);
+        } catch (\Exception $e) {
+            return ResourceError::make(500, $e->getMessage());
+        }
 
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'category/show.twig', [
-            'category' => $request,
-        ]);
+        return ResourceSuccess::make(200, 'Запись обновлена!');
     }
 }

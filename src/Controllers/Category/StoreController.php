@@ -3,26 +3,33 @@
 namespace App\Controllers\Category;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/** Создание */
+/** Добавление новой записи */
 class StoreController extends AbstractController
 {
     protected function run(): Response
     {
-        // Приходит request, который валидируем на правило required
+        // Получение данных
         $request = $this->request->getParsedBody();
-        //$data = $this->validate($request)
 
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
+        // Их обработка
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
+
+        if (!empty($error)) {
+            return ResourceError::make(400, $error);
+        }
 
         // Добавление в БД...
-        $this->categoryRepo->insertOrUpdate($request);
+        try {
+            $this->categoryRepo->insertOrUpdate($collection);
+        } catch (\Exception $e) {
+             return ResourceError::make(500, $e->getMessage());
+        }
 
-        // редирект на indexcontroller
-        return $this->response
-            ->withHeader('Location', '/categories')
-            ->withStatus(302);
+        return ResourceSuccess::make(201, 'Запись добавлена!');
     }
 }

@@ -4,7 +4,6 @@ namespace App\Controllers\Category;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
 /** Отображение формы на создание */
 class CreateController extends AbstractController
@@ -13,6 +12,8 @@ class CreateController extends AbstractController
 
     protected function run(): Response
     {
-        return $this->render($this->template);
+        return $this->render($this->template, [
+            'categories' => $this->getCategories() ?? [],
+        ]);
     }
 }

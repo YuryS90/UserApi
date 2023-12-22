@@ -28,16 +28,12 @@ trait ModelTrait
         return $tree;
     }
 
-    public function getCategory($id)
+    public function getCategory($id): array
     {
-       //$category = $this->categoryRepo->filter([
-       //    'id' => $id,
-       //    'is_del' => 0,
-       //    'single' => true
-       //]);
-
-
-        //$this->dd($categories, 1);
+        return $this->categoryRepo->filter([
+           'id' => $id,
+           'is_del' => 0,
+           'single' => true
+       ]);
     }
-
 }

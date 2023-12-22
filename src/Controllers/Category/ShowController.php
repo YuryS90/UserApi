@@ -6,7 +6,9 @@ use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 
-/** Отображение одной категории */
+/** Отображение одной категории
+ * @property mixed|null $id
+ */
 class ShowController extends AbstractController
 {
     private string $template = 'category/show.twig';

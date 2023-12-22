@@ -7,13 +7,13 @@ return function ($app) {
 
     // CRUD категорий, тегов, цветов, пользователей
     $app->group('/products', include 'app/routes/product/product.php')
-        ->add('getCategoriesMiddleware')
+        //->add('getCategoriesMiddleware')
         ->add('getProductsOrProductMiddleware')
         ->add('getProductFieldsMiddleware')
         ->add('checkPathParameterMiddleware');
 
     $app->group('/categories', include 'app/routes/category/category.php')
-        ->add('getCategoriesMiddleware');
+        ->add('checkPathParameterMiddleware');
 
     $app->group('/tags', include 'app/routes/tag/tag.php');
     $app->group('/colors', include 'app/routes/color/color.php');

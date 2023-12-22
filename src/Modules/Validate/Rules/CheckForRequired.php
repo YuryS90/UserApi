@@ -20,7 +20,11 @@ class CheckForRequired extends AbstractValidate
             'address' => 'Заполните поле c адресом!',
             'roles_id' => 'Необходимо выбрать роль!',
 
+            'title' => 'Необходимо ввести название категории!',
+            'parent_id' => 'Необходимо выбрать категорию!',
+
             'user' => 'Некорректный ID',
+            'category' => 'Некорректный ID',
         ];
 
         return $messages[$name] ?? '';

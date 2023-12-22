@@ -86,15 +86,21 @@ class Validator
     private function rules(): array
     {
         return [
+            // Для пользователей
             'email' => 'required|string|email|min:5|max:255|unique:users,email',
             'password' => 'required|string|min:8|password|confirmed',
             'name' => 'required|string',
             'address' => 'required|string',
             'roles_id' => 'required|integer',
 
-            // Валидация маршрута (содержимое в "{}")
+            // Для категорий
+            'title' => 'required|string',
+            'parent_id' => 'required|integer',
+
+            // Для "{}" в маршрутах
             'user' => 'required|integer|zero|unique:users,id',
             'product' => 'required|integer|zero|unique:products,id',
+            'category' => 'required|integer|zero|unique:categories,id',
         ];
     }
 }

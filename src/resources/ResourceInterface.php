@@ -6,6 +6,5 @@ use Slim\Psr7\Response;
 
 interface ResourceInterface
 {
-    public static function make(int $status, array $data): Response;
-    public static function messages(): array;
+    public static function make(int $status, string $message): Response;
 }

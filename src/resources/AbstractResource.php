@@ -23,8 +23,6 @@ abstract class AbstractResource implements ResourceInterface
             ->withStatus($status);
     }
 
-    abstract public static function messages(): array;
-
     /** @throws \ErrorException */
     public static function dg(...$data): void
     {

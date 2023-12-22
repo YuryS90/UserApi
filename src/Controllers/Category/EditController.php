@@ -4,29 +4,20 @@ namespace App\Controllers\Category;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
-/** Отображение формы на редактирование */
+/**
+ * Отображение формы на редактирование
+ * @property mixed|null $id
+ */
 class EditController extends AbstractController
 {
     private string $template = 'category/edit.twig';
 
     protected function run(): Response
-    {//$this->dd($this->categories);
-        // По аргументу получаем данные об этой категории
-        $category = $this->categoryRepo->filter([
-            'id' => $this->args['category'],
-            'single' => true
+    {//$this->dd($this->getCategory($this->id), $this->getCategories());
+        return $this->render($this->template, [
+            'categories' => $this->getCategories() ?? [],
+            'categoryCurrent' => $this->getCategory($this->id) ?? [],
         ]);
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'category/edit.twig', [
-            'category' => $category,
-        ]);
-
-        //return $this->render($this->template, [
-        //    'categories' => $this->categories ?? [],
-        //]);
     }
 }

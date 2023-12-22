@@ -15,6 +15,7 @@ class CheckForZero extends AbstractValidate
     {
         $messages = [
             'user' => 'Некорректный ID',
+            'category' => 'Некорректный ID',
         ];
 
         return $messages[$name] ?? '';
