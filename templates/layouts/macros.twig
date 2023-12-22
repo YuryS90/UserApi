@@ -1,0 +1,81 @@
+{# Определение макроса с именем renderList, который принимает аргумент categories
+Макрос - фрагмент шаблона, который можно вызывать из других частей шаблона с использованием
+{{ _self.renderList() }}, где _self - объект, который ссылается на текущий шаблон #}
+{% macro renderList(categories) %}
+    <ul class="list-group" id="category">
+
+        {% for category in categories %}
+            <li class="list-group-item list-group-item-light">
+                <a href="{{ url_for('category.show', { 'category': category.id }) }}"
+                   class="mr-3" style="color: #020202;">
+                    {{ category.title }}
+                </a>
+
+                <a href="#"
+                   class="mr-2">
+                    <i class="fas fa-plus fa-xs" style="color: #366350;"></i>
+                </a>
+
+                <a href="#" class="delete-category"
+                        {# data-id js #}
+                   data-id="{{ (category.childs) ? '' : category.id }}">
+                    <i class="fas fa-trash-alt fa-xs"
+                       style="color: {{ (category.childs) ? '#020202' : '#912b2d' }}"></i>
+                </a>
+
+                {# Если у элемента есть дочерние элементы (category.childs),
+                то вызываем макрос renderList рекурсивно для построения вложенного списка. #}
+                {% if category.childs is defined and category.childs|length > 0 %}
+                    {# Рекурсивный вызов макроса для дочерних элементов.
+                    Макрос вызывает сам себя с новым списком дочерних элементов
+                    в качестве аргумента (category.childs).
+                    Условие завершения - отсутствие дочерних элементов для текущего узла. #}
+                    {{ _self.renderList(category.childs) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{# char - символ, который нужно повторить; times - количество повторений #}
+{% macro repeatString(char, times) %}
+    {# Переменная, которая будет накапливать результат повторений символа #}
+    {% set result = '' %}
+    {# Количество выполнения повторений #}
+    {% for i in 1..times %}
+        {# В каждой итерации добавляет символ char к result. "~" - конкатенации строк #}
+        {% set result = result ~ char %}
+    {% endfor %}
+    {# Возвращает строку, в которой символ char повторяется times раз. #}
+    {{ result }}
+{% endmacro %}
+
+{# Создает option для каждой категории и их дочерних категорий. depth - уровень вложенности #}
+{#{% macro renderCategoryOptions(categories, depth = 0, categoryCurrent = null) %}#}
+{#    {% for category in categories %}#}
+{#        <option value="{{ category.id }}" {% if categoryCurrent is not null and categoryCurrent.id == category.id %}selected{% endif %}>#}
+{#        <option value="{{ category.id }}" {% if categoryCurrent.id == category.id %}selected{% endif %}>#}
+{#            #}{# Добавление '-'. Если depth больше 0, тогда используется repeatString,#}
+{#             чтобы повторить символ дефиса нужное количество раз. #}
+{#            {% if depth > 0 %}{{ _self.repeatString('-', depth) ~ ' ' }}{% endif %}#}
+{#            {{ category.title }}#}
+{#        </option>#}
+{#        {% if category.childs is defined and category.childs|length > 0 %}#}
+{#            #}{# Для дочерних категорий, увеличивая уровень вложенности на 1 #}
+{#            {{ _self.renderCategoryOptions(category.childs, depth + 1) }}#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+{#{% endmacro %}#}
+
+{% macro renderCategoryOptions(categories, depth = 0, categoryCurrent = null) %}
+    <option value="0" {% if categoryCurrent is not null and categoryCurrent.id == 0 %}selected{% endif %}>Новая категория</option>
+    {% for category in categories %}
+        <option value="{{ category.id }}" {% if categoryCurrent is not null and categoryCurrent.id == category.id %}selected{% endif %}>
+            {% if depth > 0 %}{{ _self.repeatString('-', depth) ~ ' ' }}{% endif %}
+            {{ category.title }}
+        </option>
+        {% if category.childs is defined and category.childs|length > 0 %}
+            {{ _self.renderCategoryOptions(category.childs, depth + 1, categoryCurrent) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}

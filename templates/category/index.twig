@@ -1,4 +1,5 @@
 {% extends "./layouts/main.twig" %}
+{% import './layouts/macros.twig' as macros %}
 
 {% block content %}
     <div class="content-header">
@@ -29,46 +30,8 @@
                                class="btn btn-outline-success btn-sm">Добавить</a>
                         </div>
 
-                        {# Определение макроса с именем renderList, который принимает аргумент categories
-                        Макрос - фрагмент шаблона, который можно вызывать из других частей шаблона с использованием
-                        {{ _self.renderList() }}, где _self - объект, который ссылается на текущий шаблон #}
-                        {% macro renderList(categories) %}
-                            <ul class="list-group" id="category">
-                                {% for category in categories %}
-                                    <li class="list-group-item list-group-item-light">
-                                        <a href="{{ url_for('category.show', { 'category': category.id }) }}"
-                                           class="mr-3" style="color: #020202;">
-                                            {{ category.title }}
-                                        </a>
-
-                                        <a href="#"
-                                           class="mr-2">
-                                            <i class="fas fa-plus fa-xs" style="color: #366350;"></i>
-                                        </a>
-
-                                        <a href="#" class="delete-category"
-                                           data-id="{{ (category.childs) ? '' : category.id }}">
-                                            <i class="fas fa-trash-alt fa-xs"
-                                               style="color: {{ (category.childs) ? '#020202' : '#912b2d' }}"></i>
-                                        </a>
-
-                                        {# Если у элемента есть дочерние элементы (category.childs),
-                                        то вызываем макрос renderList рекурсивно для построения вложенного списка. #}
-                                        {% if category.childs is defined and category.childs|length > 0 %}
-                                            {# Рекурсивный вызов макроса для дочерних элементов.
-                                            Макрос вызывает сам себя с новым списком дочерних элементов
-                                            в качестве аргумента (category.childs).
-                                            Условие завершения - отсутствие дочерних элементов для текущего узла. #}
-                                            {{ _self.renderList(category.childs) }}
-                                        {% endif %}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% endmacro %}
-
-                        {# Общий вызов макроса #}
-                        {{ _self.renderList(categories) }}
-
+                        {# Вызов макроса получения списка категорий #}
+                        {{ macros.renderList(categories) }}
                     </div>
                 </div>
             </div>
@@ -77,6 +40,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
+        {# Отправка данных form при клике на тег <a>, а также вывод ошибки из #}
         $(document).ready(function () {
             // Обработчик события клика по ссылке удаления
             $('.delete-category').on('click', function (e) {

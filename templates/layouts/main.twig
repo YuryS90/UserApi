@@ -48,8 +48,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-{#                            <img src="/public/adminlte/dist/img/user1-128x128.jpg" alt="User Avatar"#}
-{#                                 class="img-size-50 mr-3 img-circle">#}
+                            {#                            <img src="/public/adminlte/dist/img/user1-128x128.jpg" alt="User Avatar" #}
+                            {#                                 class="img-size-50 mr-3 img-circle"> #}
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Brad Diesel
@@ -65,8 +65,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-{#                            <img src="/public/adminlte/dist/img/user8-128x128.jpg" alt="User Avatar"#}
-{#                                 class="img-size-50 img-circle mr-3">#}
+                            {#                            <img src="/public/adminlte/dist/img/user8-128x128.jpg" alt="User Avatar" #}
+                            {#                                 class="img-size-50 img-circle mr-3"> #}
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     John Pierce
@@ -82,8 +82,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-{#                            <img src="/public/adminlte/dist/img/user3-128x128.jpg" alt="User Avatar"#}
-{#                                 class="img-size-50 img-circle mr-3">#}
+                            {#                            <img src="/public/adminlte/dist/img/user3-128x128.jpg" alt="User Avatar" #}
+                            {#                                 class="img-size-50 img-circle mr-3"> #}
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Nora Silvester
@@ -144,12 +144,12 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
 
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-shopping-bag"></i>
-                            <p>Заказы</p>
-                        </a>
-                    </li>
+{#                    <li class="nav-item">#}
+{#                        <a href="#" class="nav-link">#}
+{#                            <i class="nav-icon fas fa-shopping-bag"></i>#}
+{#                            <p>Заказы</p>#}
+{#                        </a>#}
+{#                    </li>#}
 
                     <li class="nav-item">
                         <a href="{{ url_for('product.index') }}" class="nav-link">
@@ -232,14 +232,31 @@
 <script src="/public/adminlte/dist/js/adminlte.js"></script>
 
 <script>
+
+    {#  Активное меню #}
+    $('.sidebar .nav-item a').each(function () {
+        let loc = window.location.origin + window.location.pathname;
+        let link = this.href;
+
+        // Убираем всё после второго слеша (edit, create, {}), но сохраняем подкаталог
+        loc = loc.replace(/(\/[^\/]+\/[^\/]+)\/.*$/, '$1');
+        link = link.replace(/(\/[^\/]+\/[^\/]+)\/.*$/, '$1');
+
+        if (link.includes(loc)) {
+            $(this).addClass('active');
+        }
+    });
+
+
+    //Валидация
     $.widget.bridge('uibutton', $.ui.button)
 
     $(function () {
         $('#quickForm').validate({
             rules: {
-                title: {
-                    required: true
-                },
+                // title: {
+                //     required: true
+                // },
                 email: {
                     required: true,
                     email: true,
@@ -256,9 +273,9 @@
                 },
             },
             messages: {
-                title: {
-                    required: "Поле не должно быть пустым!",
-                },
+                // title: {
+                //     required: "Поле не должно быть пустым!",
+                // },
                 email: {
                     required: "Пожалуйста, введите адрес электронной почты",
                     email: "Пожалуйста, введите действительный адрес электронной почты"
