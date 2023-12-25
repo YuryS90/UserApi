@@ -6,3 +6,4 @@ database/seeds/
 src/Database/
 src/Modules/Log/storage/error.log
 src/Modules/Log/storage/success.log
+/node_modules/

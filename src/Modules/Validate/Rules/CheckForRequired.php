@@ -8,7 +8,7 @@ class CheckForRequired extends AbstractValidate
 {
     public function validate(string $data, array $params = [], ?string $dataConfirm = ''): bool
     {
-        return !empty(trim($data));
+        return !empty(trim($data)) || $data == 0;
     }
 
     public function message(string $name, ?string $param): string

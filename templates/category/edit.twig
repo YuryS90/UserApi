@@ -34,19 +34,21 @@
                       action="{{ url_for('category.update', { 'category': categoryCurrent.id }) }}" method="post">
 
                     <div class="form-group">
+                        <label for="currentCategory">Текущая категория</label>
                         {{ csrf_field() | raw }}
                         <input type="hidden" name="_METHOD" value="PATCH">
                         <input type="text" name="title" class="form-control" placeholder="Ввести категорию"
-                               value="{{ categoryCurrent.title }}">
+                               id="currentCategory" value="{{ categoryCurrent.title }}">
                     </div>
 
                     <div class="form-group">
+                        <label for="parentCategory">Родительская категория</label>
                         <select name="parent_id" aria-invalid="false" class="custom-select form-control-border"
-                                required>
+                                id="parentCategory" required>
                             <option disabled selected>Выбрать категорию:</option>
                             <option value="0">Новая категория</option>
-{#                            {{ macros.renderCategoryOptions(categories, 0, categoryCurrent) }}#}
-                            {{ macros.renderCategoryOptions(categories, 0, {'id': 26, 'parentId': 20, 'title': 'Кролики'}) }}                        </select>
+                            {{ macros.renderCategoryOptions(categories, 0, categoryCurrent) }}
+                        </select>
                     </div>
 
                     <div class="form-group">

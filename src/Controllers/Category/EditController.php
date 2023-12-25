@@ -14,7 +14,7 @@ class EditController extends AbstractController
     private string $template = 'category/edit.twig';
 
     protected function run(): Response
-    {//$this->dd($this->getCategory($this->id), $this->getCategories());
+    {
         return $this->render($this->template, [
             'categories' => $this->getCategories() ?? [],
             'categoryCurrent' => $this->getCategory($this->id) ?? [],

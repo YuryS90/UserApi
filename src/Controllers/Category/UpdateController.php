@@ -27,8 +27,8 @@ class UpdateController extends AbstractController
         try {
             $this->categoryRepo->insertOrUpdate([
                 'id' => $this->id ?? null,
-                'title' => $collection['title'],
-                'parent_id' => $collection['parent_id'],
+                'title' => $collection['title'] ?? null,
+                'parent_id' => $collection['parent_id'] ?? null,
             ]);
         } catch (\Exception $e) {
             return ResourceError::make(500, $e->getMessage());

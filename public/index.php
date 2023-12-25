@@ -7,6 +7,11 @@ use Slim\Middleware\MethodOverrideMiddleware;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 
+ini_set('log_errors', true);
+ini_set('error_log', 'error_log');
+ini_set('display_errors', false);
+ini_set('error_reporting', E_ALL);
+
 // Не ругается на require(vendor/autoload.php)
 chdir(__DIR__ . '/../');
 
@@ -48,24 +53,24 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
 $twig->addExtension(new \App\Modules\Views\CsrfExtension($container->get('csrf')));
 $app->add(TwigMiddleware::create($app, $twig));
 
-// Это $_POST. Включает парсинг json в getParsedBody()
-$app->addBodyParsingMiddleware();
-
 $app->addRoutingMiddleware();
 
 // Register Middleware To Be Executed On All Routes
-$app->add('csrf');
+//$app->add('csrf');
 
 // Метод переопределения HTTP запроса, напр из POST в PATCH
 $methodOverrideMiddleware = new MethodOverrideMiddleware();
 $app->add($methodOverrideMiddleware);
 
+// Это $_POST. Включает парсинг json в getParsedBody()
+$app->addBodyParsingMiddleware();
 $error = $app->addErrorMiddleware(true, true, true);
 $error->setErrorHandler(HttpNotFoundException::class, NotFound::class);
 
 $app->group('', include 'app/routes/root.php')
     //->add('checkPathParameterMiddleware')
-    ->add('serverMiddleware') // 2
-    ->add('exceptionMiddleware'); // 1
+    ->add('serverMiddleware') // 3
+    ->add('exceptionMiddleware') // 2
+    ->add('csrf'); // 1
 
 $app->run();

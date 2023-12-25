@@ -51,30 +51,18 @@
 {% endmacro %}
 
 {# Создает option для каждой категории и их дочерних категорий. depth - уровень вложенности #}
-{#{% macro renderCategoryOptions(categories, depth = 0, categoryCurrent = null) %}#}
-{#    {% for category in categories %}#}
-{#        <option value="{{ category.id }}" {% if categoryCurrent is not null and categoryCurrent.id == category.id %}selected{% endif %}>#}
-{#        <option value="{{ category.id }}" {% if categoryCurrent.id == category.id %}selected{% endif %}>#}
-{#            #}{# Добавление '-'. Если depth больше 0, тогда используется repeatString,#}
-{#             чтобы повторить символ дефиса нужное количество раз. #}
-{#            {% if depth > 0 %}{{ _self.repeatString('-', depth) ~ ' ' }}{% endif %}#}
-{#            {{ category.title }}#}
-{#        </option>#}
-{#        {% if category.childs is defined and category.childs|length > 0 %}#}
-{#            #}{# Для дочерних категорий, увеличивая уровень вложенности на 1 #}
-{#            {{ _self.renderCategoryOptions(category.childs, depth + 1) }}#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{#{% endmacro %}#}
-
 {% macro renderCategoryOptions(categories, depth = 0, categoryCurrent = null) %}
-    <option value="0" {% if categoryCurrent is not null and categoryCurrent.id == 0 %}selected{% endif %}>Новая категория</option>
     {% for category in categories %}
-        <option value="{{ category.id }}" {% if categoryCurrent is not null and categoryCurrent.id == category.id %}selected{% endif %}>
+        <option value="{{ category.id }}"
+                {{ categoryCurrent.parentId == category.id ? 'selected' : '' }}
+                {{ categoryCurrent.id == category.id ? 'disabled' : '' }}>
+            {# Добавление '-'. Если depth больше 0, тогда используется repeatString,
+                        чтобы повторить символ дефиса нужное количество раз. #}
             {% if depth > 0 %}{{ _self.repeatString('-', depth) ~ ' ' }}{% endif %}
             {{ category.title }}
         </option>
         {% if category.childs is defined and category.childs|length > 0 %}
+            {# Для дочерних категорий, увеличивая уровень вложенности на 1 #}
             {{ _self.renderCategoryOptions(category.childs, depth + 1, categoryCurrent) }}
         {% endif %}
     {% endfor %}

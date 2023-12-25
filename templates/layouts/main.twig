@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="/public/adminlte/dist/css/adminlte.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="/public/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -144,12 +147,12 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
 
-{#                    <li class="nav-item">#}
-{#                        <a href="#" class="nav-link">#}
-{#                            <i class="nav-icon fas fa-shopping-bag"></i>#}
-{#                            <p>Заказы</p>#}
-{#                        </a>#}
-{#                    </li>#}
+                    {#                    <li class="nav-item"> #}
+                    {#                        <a href="#" class="nav-link"> #}
+                    {#                            <i class="nav-icon fas fa-shopping-bag"></i> #}
+                    {#                            <p>Заказы</p> #}
+                    {#                        </a> #}
+                    {#                    </li> #}
 
                     <li class="nav-item">
                         <a href="{{ url_for('product.index') }}" class="nav-link">
@@ -232,21 +235,19 @@
 <script src="/public/adminlte/dist/js/adminlte.js"></script>
 
 <script>
-
     {#  Активное меню #}
     $('.sidebar .nav-item a').each(function () {
         let loc = window.location.origin + window.location.pathname;
         let link = this.href;
 
-        // Убираем всё после второго слеша (edit, create, {}), но сохраняем подкаталог
+        // Убираем всё после второго слэша (edit, create, {}), но сохраняем подкаталог
         loc = loc.replace(/(\/[^\/]+\/[^\/]+)\/.*$/, '$1');
         link = link.replace(/(\/[^\/]+\/[^\/]+)\/.*$/, '$1');
 
-        if (link.includes(loc)) {
+        if (loc === link) {
             $(this).addClass('active');
         }
     });
-
 
     //Валидация
     $.widget.bridge('uibutton', $.ui.button)
@@ -309,5 +310,8 @@
     $('.tags').select2()
     $('.colors').select2()
 </script>
+
+<script src="/public/js/main3.js"></script>
+{#<script type="module" src="/public/dist/bundle.js"></script>#}
 </body>
 </html>
