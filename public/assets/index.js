@@ -1,3 +1,6 @@
+// Подключение SweetAlert
+import Swal from 'sweetalert2';
+
 $(document).ready(function () {
     $('#quickForm').submit(function (e) {
         e.preventDefault();
@@ -9,19 +12,17 @@ $(document).ready(function () {
             formData[field.name] = field.value;
         });
 
-        const options = {
-            method: 'POST',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-        };
-
         const route = $(this).attr('action');
 
-        $.ajax({
-            url: route,
-            ...options,
+        fetch(route, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
         })
-            .done(function (data) {
+            .then(response => response.json())
+            .then(data => {
                 console.log('JSON response:', data);
 
                 if (data.success) {
@@ -31,7 +32,7 @@ $(document).ready(function () {
                         text: data.message,
                         showConfirmButton: false,
                         timer: 3000
-                    });
+                    })
 
                     setTimeout(() => {
                         window.location.href = '/';
@@ -41,14 +42,15 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Ошибка!',
                         text: data.message,
-                        footer: '<a href>Подробности</a>'
+                    }).then(r => {
+                        // Выполнится после закрытия модального окна
+                        console.log('User closed the SweetAlert modal');
                     });
                 }
 
-                // Ваш код обработки данных (если требуется)
             })
-            .fail(function (error) {
-                console.error('Ajax error:', error);
+            .catch(error => {
+                console.error('Fetch error:', error);
             });
     });
 });

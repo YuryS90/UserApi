@@ -30,6 +30,7 @@ class CheckForInt extends AbstractValidate
 
             'user' => 'Некорректный ID',
             'category' => 'Некорректный ID',
+            'color' => 'Некорректный ID',
         ];
 
         return $messages[$name] ?? '';

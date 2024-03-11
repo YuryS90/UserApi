@@ -33,8 +33,8 @@
                     <div class="form-group">
                         {{ csrf_field() | raw }}
                         <input type="hidden" name="_METHOD" value="PATCH">
-                        <input type="text" name="title" class="form-control" placeholder="Ввести цвет"
-                               value="{{ color.title }}">
+                        <input type="color" name="code" class="form-control" placeholder="Ввести цвет"
+                               value="{{ color.code }}">
                     </div>
 
                     <div class="form-group">

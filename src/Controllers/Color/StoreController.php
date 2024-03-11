@@ -3,25 +3,28 @@
 namespace App\Controllers\Color;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class StoreController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
-        // Приходит request, который валидируем на правило required
+        // Получение данных
         $request = $this->request->getParsedBody();
-        //$data = $this->validate($request)
 
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
+        // Их обработка
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
 
-        // Добавление в БД...
-        $this->colorRepo->insertOrUpdate($request);
+        if (!empty($error)) {
+            return ResourceError::make(202, $error);
+        }
 
-        // редирект на indexcontroller
-        return $this->response
-            ->withHeader('Location', '/colors')
-            ->withStatus(302);
+        $this->insert(self::COLOR, $collection);
+
+        return ResourceSuccess::make(201, 'Запись добавлена!');
     }
 }

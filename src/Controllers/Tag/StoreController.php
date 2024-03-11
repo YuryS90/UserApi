@@ -3,25 +3,30 @@
 namespace App\Controllers\Tag;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class StoreController extends AbstractController
 {
+    const REPO = 'tag';
+
+    /**
+     * @throws \Exception
+     */
     protected function run(): Response
     {
-        // Приходит request, который валидируем на правило required
         $request = $this->request->getParsedBody();
-        //$data = $this->validate($request)
 
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
 
-        // Добавление в БД...
-        $this->tagRepo->insertOrUpdate($request);
+        if (!empty($error)) {
+            return ResourceError::make(202, $error);
+        }
 
-        // редирект на indexcontroller
-        return $this->response
-            ->withHeader('Location', '/tags')
-            ->withStatus(302);
+        $this->insert($collection, self::REPO);
+
+        return ResourceSuccess::make(201, 'Запись добавлена!');
     }
 }

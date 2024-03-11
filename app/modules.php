@@ -25,4 +25,8 @@ return [
         return new \App\Modules\Auth($container);
     },
 
+    'cacheMod' => function (ContainerInterface $container) {
+        return new \App\Modules\Cache\Cache($container->get('paths')['cache']);
+    },
+
 ];

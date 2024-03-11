@@ -4,13 +4,13 @@ namespace App\Controllers\Color;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
 class CreateController extends AbstractController
 {
+    private string $template = 'color/create.twig';
+
     protected function run(): Response
     {
-        $view = Twig::fromRequest($this->request);
-        return $view->render($this->response, 'color/create.twig');
+        return $this->render($this->template);
     }
 }

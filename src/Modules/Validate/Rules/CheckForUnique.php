@@ -29,10 +29,12 @@ class CheckForUnique extends AbstractValidate
     {
         $messages = [
             'email' => 'Пользователь с таким email уже существует!',
+            'code' => 'Код такого цвета уже существует!',
 
             'user' => 'Такого пользователя нет!',
             'product' => 'Такого товара нет!',
             'category' => 'Такой категории нет!',
+            'color' => 'Такого цвета нет!',
         ];
 
         return $messages[$name] ?? '';

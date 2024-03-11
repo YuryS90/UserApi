@@ -10,10 +10,11 @@ class IndexController extends AbstractController
 {
     private string $template = 'category/index.twig';
 
+    /** @throws \Exception */
     protected function run(): Response
     {
         return $this->render($this->template, [
-            'categories' => $this->getCategories() ?? [],
+            'categories' => $this->getCacheCategories(self::CACHE_TREE) ?? [],
         ]);
     }
 }

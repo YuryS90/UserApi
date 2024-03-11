@@ -13,10 +13,11 @@ class ShowController extends AbstractController
 {
     private string $template = 'category/show.twig';
 
+    /** @throws \Exception */
     protected function run(): Response
     {
         return $this->render($this->template, [
-            'category' => $this->getCategory($this->id) ?? [],
+            'category' => $this->getAllOrSingle(self::CATEGORY, $this->id) ?? []
         ]);
     }
 }

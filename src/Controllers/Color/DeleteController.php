@@ -3,19 +3,17 @@
 namespace App\Controllers\Color;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
+/** @property mixed|null $id */
 class DeleteController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
-        // сюда прилеатает
-        $this->dd($this->args, 'DeleteControllerCOLOR');
-        //unset($request['_METHOD']);
-        //unset($request['csrf_name']);
-        //unset($request['csrf_value']);
-        // удаление из бд
+        $this->delete(self::COLOR, $this->id);
 
-        // ретурн редирект список
+        return ResourceSuccess::make(200, 'Запись удалена!');
     }
 }

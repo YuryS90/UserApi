@@ -3,20 +3,18 @@
 namespace App\Controllers\Color;
 
 use App\Controllers\AbstractController;
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
 class IndexController extends AbstractController
 {
+    private string $template = 'color/index.twig';
+
+    /** @throws Exception */
     protected function run(): Response
     {
-        // Получаем список тегов
-        $colors = $this->colorRepo->filter([]);
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'color/index.twig', [
-            'colors' => $colors,
+        return $this->render($this->template, [
+            'colors' => $this->getAllOrSingle(self::COLOR) ?? [],
         ]);
     }
 }

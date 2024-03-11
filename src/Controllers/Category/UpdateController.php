@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class UpdateController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
         $request = $this->request->getParsedBody();
@@ -21,18 +22,18 @@ class UpdateController extends AbstractController
         $error = $this->validated($collection);
 
         if (!empty($error)) {
-            return ResourceError::make(400, $error);
+            return ResourceError::make(202, $error);
         }
 
-        try {
-            $this->categoryRepo->insertOrUpdate([
-                'id' => $this->id ?? null,
-                'title' => $collection['title'] ?? null,
-                'parent_id' => $collection['parent_id'] ?? null,
-            ]);
-        } catch (\Exception $e) {
-            return ResourceError::make(500, $e->getMessage());
-        }
+        $this->update(self::CATEGORY, [
+            'id' => $this->id ?? null,
+            'title' => $collection['title'] ?? null,
+            'parent_id' => $collection['parent_id'] ?? null,
+        ]);
+
+        // Удаление файлов кеша
+        $this->destroyCache(self::CACHE_TREE);
+        $this->destroyCache(self::CACHE_CATEGORY_LIST);
 
         return ResourceSuccess::make(200, 'Запись обновлена!');
     }

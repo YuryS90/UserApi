@@ -4,19 +4,18 @@ namespace App\Modules\Validate\Rules;
 
 use App\Modules\Validate\AbstractValidate;
 
-class CheckForZero extends AbstractValidate
+class CheckForNumeric extends AbstractValidate
 {
     public function validate(string $data, array $params = [], ?string $dataConfirm = ''): bool
     {
-        return $data >= 0;
+        // Проверяем, что $data равно "0" или является числом
+        return is_numeric($data);
     }
 
     public function message(string $name, ?string $param): string
     {
         $messages = [
-            'user' => 'Некорректный ID',
-            'category' => 'Некорректный ID',
-            'color' => 'Некорректный ID',
+            'parent_id' => 'Необходимо выбрать категорию!',
         ];
 
         return $messages[$name] ?? '';

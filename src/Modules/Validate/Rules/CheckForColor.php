@@ -4,21 +4,19 @@ namespace App\Modules\Validate\Rules;
 
 use App\Modules\Validate\AbstractValidate;
 
-class CheckForZero extends AbstractValidate
+class CheckForColor extends AbstractValidate
 {
     public function validate(string $data, array $params = [], ?string $dataConfirm = ''): bool
     {
-        return $data >= 0;
+        return preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', trim($data)) === 1;
     }
 
     public function message(string $name, ?string $param): string
     {
         $messages = [
-            'user' => 'Некорректный ID',
-            'category' => 'Некорректный ID',
-            'color' => 'Некорректный ID',
+            'code' => 'Цвет должен соответствовать формату #000000'
         ];
 
-        return $messages[$name] ?? '';
+        return $messages[$name];
     }
 }

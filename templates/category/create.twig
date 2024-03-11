@@ -35,9 +35,11 @@
 
                     <div class="form-group">
                         <select name="parent_id" aria-invalid="false" class="custom-select form-control-border"
-                                required>
-                            <option disabled selected>Выбрать категорию:</option>
+                                >
+{#                                required>#}
+                            <option value="" selected>Выбрать категорию:</option>
                             <option value="0">Новая категория</option>
+
                             {{ macros.renderCategoryOptions(categories) }}
                         </select>
                     </div>

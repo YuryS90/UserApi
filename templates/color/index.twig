@@ -43,10 +43,10 @@
                                         <td>{{ color.id }}</td>
                                         <td>
                                             <a href="{{ url_for('color.show', { 'color': color.id }) }}">
-                                                {{ color.title }}</a>
+                                                {{ color.code }}</a>
                                         </td>
                                         <td>
-                                            <div style="width: 16px; height: 16px; background: {{ color.title }}"></div>
+                                            <div style="width: 16px; height: 16px; background: {{ color.code }}"></div>
                                         </td>
                                     </tr>
                                 {% endfor %}

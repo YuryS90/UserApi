@@ -5,7 +5,7 @@ declare(strict_types=1);
 (\Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2)))->load();
 
 return [
-    'paths' => [
+    'paths_phinx' => [
         'migrations' => __DIR__ . '/../migrations',
         'seeds' => __DIR__ . '/../seeds'
     ],

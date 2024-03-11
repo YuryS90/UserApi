@@ -95,12 +95,16 @@ class Validator
 
             // Для категорий
             'title' => 'required|string',
-            'parent_id' => 'required|integer',
+            'parent_id' => 'numeric|integer',
+
+            // Для цветов
+            'code' => 'required|string|color|unique:colors,code',
 
             // Для "{}" в маршрутах
             'user' => 'required|integer|zero|unique:users,id',
             'product' => 'required|integer|zero|unique:products,id',
             'category' => 'required|integer|zero|unique:categories,id',
+            'color' => 'required|integer|zero|unique:colors,id',
         ];
     }
 }

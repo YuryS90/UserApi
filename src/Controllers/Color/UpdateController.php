@@ -3,34 +3,30 @@
 namespace App\Controllers\Color;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
+/** @property mixed|null $id */
 class UpdateController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
         $request = $this->request->getParsedBody();
 
-        // валидация
-        //$data = $this->validate($request)
-        unset($request['_METHOD']);
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
-        // обновлем в бд
-        $this->colorRepo->insertOrUpdate([
-            'id' => $this->args['color'],
-            'title' => $request['title'],
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
+
+        if (!empty($error)) {
+            return ResourceError::make(202, $error);
+        }
+
+        $this->update(self::COLOR, [
+            'id' => $this->id ?? null,
+            'code' => $collection['code'] ?? null,
         ]);
 
-        $id = $this->args['id'] = $this->args['color'];
-        $request['id'] = $id;
-        unset($request['_METHOD']);
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'color/show.twig', [
-            'color' => $request,
-        ]);
+        return ResourceSuccess::make(200, 'Запись обновлена!');
     }
 }

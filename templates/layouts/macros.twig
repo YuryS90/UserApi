@@ -2,26 +2,35 @@
 Макрос - фрагмент шаблона, который можно вызывать из других частей шаблона с использованием
 {{ _self.renderList() }}, где _self - объект, который ссылается на текущий шаблон #}
 {% macro renderList(categories) %}
-    <ul class="list-group" id="category">
+    <ul class="list-group" style="border: 1px solid black" id="category">
 
         {% for category in categories %}
-            <li class="list-group-item list-group-item-light">
+            <li class="list-group-item list-group-item-light d-flex" style="border: 1px solid black">
                 <a href="{{ url_for('category.show', { 'category': category.id }) }}"
-                   class="mr-3" style="color: #020202;">
+                   class="mr-2" style="color: #020202;">
                     {{ category.title }}
                 </a>
 
-                <a href="#"
-                   class="mr-2">
-                    <i class="fas fa-plus fa-xs" style="color: #366350;"></i>
-                </a>
+                <div class="dropdown show">
+                    <a class="btn btn-sm" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-cog"></i>
+                    </a>
 
-                <a href="#" class="delete-category"
-                        {# data-id js #}
-                   data-id="{{ (category.childs) ? '' : category.id }}">
-                    <i class="fas fa-trash-alt fa-xs"
-                       style="color: {{ (category.childs) ? '#020202' : '#912b2d' }}"></i>
-                </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+
+                        <a class="dropdown-item" href="{{ url_for('category.show', { 'category': category.id }) }}">
+                            Просмотр</a>
+
+                        <a class="dropdown-item" href="{{ url_for('category.edit', { 'category': category.id }) }}">
+                            Изменить</a>
+
+                        {# data-id => отправка формы js #}
+                        <a class="dropdown-item delete-category {{ (category.childs) ? ' disabled' : '' }}"
+                           href="#" data-id="{{ category.id }}">Удалить</a>
+
+                    </div>
+                </div>
 
                 {# Если у элемента есть дочерние элементы (category.childs),
                 то вызываем макрос renderList рекурсивно для построения вложенного списка. #}

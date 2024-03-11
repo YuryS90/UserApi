@@ -4,22 +4,17 @@ namespace App\Controllers\Color;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
+/** @property mixed|null $id */
 class EditController extends AbstractController
 {
+    private string $template = 'color/edit.twig';
+
+    /** @throws \Exception */
     protected function run(): Response
     {
-        // По аргументу получаем данные об этой категории
-        $color = $this->colorRepo->filter([
-            'id' => $this->args['color'],
-            'single' => true
-        ]);
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'color/edit.twig', [
-            'color' => $color,
+        return $this->render($this->template, [
+            'color' => $this->getAllOrSingle(self::COLOR, $this->id) ?? []
         ]);
     }
 }

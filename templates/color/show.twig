@@ -14,7 +14,7 @@
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ url_for('color.index') }}">Цвета</a></li>
-                        <li class="breadcrumb-item active">{{ color.title }}</li>
+                        <li class="breadcrumb-item active">{{ color.code }}</li>
                     </ol>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                                 </tr>
                                 <tr>
                                     <td>Наименование</td>
-                                    <td>{{ color.title }}</td>
+                                    <td>{{ color.code }}</td>
                                 </tr>
                                 </tbody>
                             </table>

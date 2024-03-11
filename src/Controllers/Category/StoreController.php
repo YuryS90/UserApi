@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 /** Добавление новой записи */
 class StoreController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
         // Получение данных
@@ -20,15 +21,14 @@ class StoreController extends AbstractController
         $error = $this->validated($collection);
 
         if (!empty($error)) {
-            return ResourceError::make(400, $error);
+            return ResourceError::make(202, $error);
         }
 
-        // Добавление в БД...
-        try {
-            $this->categoryRepo->insertOrUpdate($collection);
-        } catch (\Exception $e) {
-             return ResourceError::make(500, $e->getMessage());
-        }
+        $this->insert(self::CATEGORY, $collection);
+
+        // Удаление файлов кеша
+        $this->destroyCache(self::CACHE_TREE);
+        $this->destroyCache(self::CACHE_CATEGORY_LIST);
 
         return ResourceSuccess::make(201, 'Запись добавлена!');
     }

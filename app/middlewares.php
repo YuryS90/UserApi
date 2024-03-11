@@ -38,8 +38,4 @@ return [
         return new App\Middleware\Products\GetProductFieldsMiddleware($container);
     },
 
-    'getCategoriesMiddleware' => function (ContainerInterface $container) {
-        return new \App\Middleware\Category\GetCategoriesMiddleware($container);
-    },
-
 ];
