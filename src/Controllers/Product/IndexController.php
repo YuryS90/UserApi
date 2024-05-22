@@ -7,18 +7,31 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * @property mixed|null products
- * @property mixed|null $productFields
  */
 class IndexController extends AbstractController
 {
     private string $template = 'product/index.twig';
 
     protected function run(): Response
-    {//$this->dd($this->product);
-        //$this->dd($this->categories);
+    {
+        // Имена полей таблицы users
+        $columns = $this->listByParams(self::REPO_PRODUCT_FIELD, [
+            'column' => true
+        ]);
+
+
+        // return $this->render($this->template, [
+        //     // Пользователи с учётом их ролей
+        //     'users' => $this->listByParams(self::REPO_USER, [
+        //         'usersJoin' => true
+        //     ]),
+        //     // Имена полей в нужном порядке
+        //     'fields' => $this->generateColumns($columns)
+        // ]);
+
         return $this->render($this->template, [
-            'users' => $this->products ?? [],
-            'fields' => $this->productFields ?? [],
+            'products' => $this->products ?? [],
+            'fields' => $this->setFieldOrder($columns, 'PROD')
         ]);
     }
 }
