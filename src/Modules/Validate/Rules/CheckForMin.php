@@ -16,6 +16,7 @@ class CheckForMin extends AbstractValidate
         $messages = [
             'email' => "Email слишком короткий: минимум {$param} символов!",
             'password' => "Пароль должен содержать минимум {$param} символов!",
+            'password_confirmation' => "Подтверждение пароля должен содержать минимум {$param} символов!",
         ];
 
         return $messages[$name] ?? '';

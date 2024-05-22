@@ -3,19 +3,15 @@
 namespace App\Controllers\Tag;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class DeleteController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
-        // сюда прилеатает
-        $this->dd($this->args, 'DeleteControllerTAG');
-        //unset($request['_METHOD']);
-        //unset($request['csrf_name']);
-        //unset($request['csrf_value']);
-        // удаление из бд
-
-        // ретурн редирект список
+        $this->delete(self::REPO_TAG, $this->id);
+        return ResourceSuccess::make(200, 'Запись удалена!');
     }
 }

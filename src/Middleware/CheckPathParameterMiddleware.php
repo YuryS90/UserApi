@@ -15,18 +15,14 @@ class CheckPathParameterMiddleware extends AbstractMiddleware
         $args = $this->getRouteArgs();
 
         if (!empty($args)) {
-            $argsKey = key($args);
 
-            $id = $this->getRouteArgument($argsKey);
-
-            // Валидация
-            $error = $this->validated([$argsKey => $id]);
+            $error = $this->validated($args, true);
 
             if (!empty($error)) {
                 return $this->responseJson(422, [$error]);
             }
 
-            $this->id = (int)$id;
+            $this->id = (int)current($args);
         }
 
         return $this->handle();

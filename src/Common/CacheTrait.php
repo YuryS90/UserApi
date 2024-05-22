@@ -7,29 +7,17 @@ trait CacheTrait
     use ModelTrait;
 
     /** @throws \Exception */
-    public function getCacheCategories(string $key, bool $list = false): array
+    public function cache(array $params): ?array
     {
-        if ($list) {
-            if (!$this->cacheMod->has($key)) {
-                $list = $this->getAllOrSingle(self::CATEGORY);
+        if (!$this->cacheMod->has($params['key'])) {
 
-                $this->cacheMod->set($key, $list);
-            }
-
-            return $this->cacheMod->get($key);
+            // По умолчанию кешируется весь список
+            $list = $this->getAllOrById($params['repo']);
+            $this->cacheMod->set($params['key'], $list);
         }
 
-        if (!$this->cacheMod->has($key)) {
-            $list = $this->getAllOrSingle(self::CATEGORY);
-
-            $categories = $this->buildTree2($list);
-
-            $this->cacheMod->set($key, $categories);
-        }
-
-        return $this->cacheMod->get($key);
+        return $this->cacheMod->get($params['key']);
     }
-
 
     public function destroyCache(string $key): void
     {

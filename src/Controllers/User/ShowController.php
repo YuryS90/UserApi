@@ -5,19 +5,30 @@ namespace App\Controllers\User;
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * @property mixed|null userFields
- * @property mixed|null $user
- */
 class ShowController extends AbstractController
 {
     private string $template = 'user/show.twig';
 
+    /**
+     * @throws \Exception
+     */
     protected function run(): Response
     {
+        // Имена полей таблицы users
+        $columns = $this->listByParams(self::REPO_USER_FIELD, [
+            'column' => true
+        ]);
+
         return $this->render($this->template, [
-            'user' => $this->user ?? null,
-            'fields' => $this->userFields ?? []
+            // Пользователь + название его роли
+            'user' => [$this->listByParams(self::REPO_USER, [
+                'usersJoin' => true,
+                'id' => $this->id
+            ])],
+            // Имена полей в нужном порядке
+            'fields' => $this->setFieldOrder($columns, 'US'),
+            // Параметр URL
+            'urlParam' => $this->id
         ]);
     }
 }

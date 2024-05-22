@@ -34,9 +34,9 @@ class Repo extends Model
         }
 
         // Если COUNT()
-        if ($params['count']) {
-            return $q->exec()->result();
-        }
+        //if ($params['count']) {
+        //    return $q->exec()->result();
+        //}
 
         if (!$list = $q->exec()->listCamelCase('id')) {
             return null;

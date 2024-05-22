@@ -3,22 +3,17 @@
 namespace App\Controllers\User;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * @property mixed|null $userRepo
- * @property mixed|null $id
- */
 class DeleteController extends AbstractController
 {
+    /**
+     * @throws \Exception
+     */
     protected function run(): Response
     {
-        // Удаление - изменение статуса
-        $this->userRepo->insertOrUpdate([
-            'id' => $this->id ?? null,
-            'is_del' => 1,
-        ]);
-
-        return $this->redirect('/users');
+        $this->delete(self::REPO_USER, $this->id);
+        return ResourceSuccess::make(200, 'Запись удалена!');
     }
 }

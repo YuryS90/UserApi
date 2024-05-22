@@ -4,9 +4,6 @@ namespace App\Models\Product;
 
 use App\Models\Model;
 
-/**
- * @property mixed|null $db
- */
 class Repo extends Model
 {
     const TABLE = 'products';

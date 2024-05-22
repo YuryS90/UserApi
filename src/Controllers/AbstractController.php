@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  * @property mixed|null $categoryRepo
  * @property mixed|null $colorRepo
  * @property mixed|null $cacheMod
+ * @property mixed|null $id
  */
 abstract class AbstractController
 {
@@ -22,10 +23,18 @@ abstract class AbstractController
     protected \Slim\Psr7\Response $response;
     protected array $args;
 
-    protected const COLOR = 'color';
-    protected const CATEGORY = 'category';
-    protected const CACHE_TREE = 'tree';
-    protected const CACHE_CATEGORY_LIST = 'list';
+    protected const REPO_COLOR = 'color';
+    protected const REPO_CATEGORY = 'category';
+    protected const REPO_TAG = 'tag';
+    protected const REPO_USER = 'user';
+    protected const REPO_ROLE = 'role';
+    protected const REPO_PRODUCT = 'product';
+
+    protected const REPO_USER_FIELD = 'userField';
+    protected const REPO_PRODUCT_FIELD = 'productField';
+
+    protected const KEY_CATEGORIES = 'categories';
+    protected const KEY_USER_ROLES = 'user_roles';
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {

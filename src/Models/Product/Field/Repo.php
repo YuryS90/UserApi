@@ -4,9 +4,6 @@ namespace App\Models\Product\Field;
 
 use App\Models\Model;
 
-/**
- * @property mixed|null $db
- */
 class Repo extends Model
 {
     const TABLE_INFO = 'information_schema.COLUMNS';
@@ -45,5 +42,4 @@ class Repo extends Model
 
         return !empty($params['single']) ? current($list) : $list;
     }
-
 }

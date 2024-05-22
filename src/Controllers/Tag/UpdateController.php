@@ -3,34 +3,29 @@
 namespace App\Controllers\Tag;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
 class UpdateController extends AbstractController
 {
+    /** @throws \Exception */
     protected function run(): Response
     {
         $request = $this->request->getParsedBody();
 
-        // валидация
-        //$data = $this->validate($request)
-        unset($request['_METHOD']);
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
-        // обновлем в бд
-        $this->tagRepo->insertOrUpdate([
-            'id' => $this->args['tag'],
-            'title' => $request['title'],
+        $collection = $this->sanitization($request);
+        $error = $this->validated($collection);
+
+        if (!empty($error)) {
+            return ResourceError::make(202, $error);
+        }
+
+        $this->update(self::REPO_TAG, [
+            'id' => $this->id ?? null,
+            'title' => $collection['title'] ?? null,
         ]);
 
-        $id = $this->args['id'] = $this->args['tag'];
-        $request['id'] = $id;
-        unset($request['_METHOD']);
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'tag/show.twig', [
-            'tag' => $request,
-        ]);
+        return ResourceSuccess::make(200, 'Запись обновлена!');
     }
 }

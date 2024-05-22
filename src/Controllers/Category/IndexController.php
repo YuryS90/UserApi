@@ -13,8 +13,13 @@ class IndexController extends AbstractController
     /** @throws \Exception */
     protected function run(): Response
     {
+        $categories = $this->cache([
+            'key' => self::KEY_CATEGORIES,
+            'repo' => self::REPO_CATEGORY,
+        ]);
+
         return $this->render($this->template, [
-            'categories' => $this->getCacheCategories(self::CACHE_TREE) ?? [],
+            'categories' => $this->buildTree2($categories)
         ]);
     }
 }

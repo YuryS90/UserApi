@@ -4,10 +4,6 @@ namespace App\Models\User;
 
 use App\Models\Model;
 
-/**
- * @property mixed|null $db
- * @property mixed|null $roleRepo
- */
 class Repo extends Model
 {
     const TABLE = 'users';

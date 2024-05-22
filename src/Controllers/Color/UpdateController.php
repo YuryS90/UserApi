@@ -7,7 +7,6 @@ use App\resources\ResourceError;
 use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/** @property mixed|null $id */
 class UpdateController extends AbstractController
 {
     /** @throws \Exception */
@@ -22,7 +21,7 @@ class UpdateController extends AbstractController
             return ResourceError::make(202, $error);
         }
 
-        $this->update(self::COLOR, [
+        $this->update(self::REPO_COLOR, [
             'id' => $this->id ?? null,
             'code' => $collection['code'] ?? null,
         ]);

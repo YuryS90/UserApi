@@ -3,37 +3,42 @@
 namespace App\Controllers\User;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
+use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * @property mixed|null $userRepo
- * @property mixed|null $roles
- */
 class StoreController extends AbstractController
 {
     private string $renderError = 'user/create.twig';
 
+    /**
+     * @throws \Exception
+     */
     protected function run(): Response
     {
-        $request = $this->request->getParsedBody() ?? [];
+        // Получение данных
+        $request = $this->request->getParsedBody();
 
-        // Обработка данных
+        // Их обработка
         $collection = $this->sanitization($request);
         $error = $this->validated($collection);
 
+        // Если не прошло валидацию, то возвращаемся снова к форме со старыми данными
         if (!empty($error)) {
-
-            // Значит есть недопустимые данные
             return $this->render($this->renderError, [
                 'error' => $error,
                 'old' => $collection,
-                'roles' => $this->roles ?? [],
+                'roles' => $this->cache([
+                    'key' => self::KEY_USER_ROLES,
+                    'repo' => self::REPO_ROLE,
+                ])
             ]);
         }
+        // TODO: return ResourceError::make(202, $error, $collection);
 
-        // Добавление в БД
-        $this->userRepo->insertOrUpdate($collection);
+        unset($collection['password_confirmation']);
+        $this->insert(self::REPO_USER, $collection);
 
-        return $this->redirect('/users');
+        return ResourceSuccess::make(201, 'Запись добавлена!');
     }
 }

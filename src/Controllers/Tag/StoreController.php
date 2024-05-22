@@ -9,15 +9,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class StoreController extends AbstractController
 {
-    const REPO = 'tag';
-
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     protected function run(): Response
     {
+        // Получение данных
         $request = $this->request->getParsedBody();
 
+        // Их обработка
         $collection = $this->sanitization($request);
         $error = $this->validated($collection);
 
@@ -25,7 +23,7 @@ class StoreController extends AbstractController
             return ResourceError::make(202, $error);
         }
 
-        $this->insert($collection, self::REPO);
+        $this->insert(self::REPO_TAG, $collection);
 
         return ResourceSuccess::make(201, 'Запись добавлена!');
     }

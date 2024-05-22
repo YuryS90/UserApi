@@ -20,9 +20,9 @@ trait SafetyTrait
         return $collection;
     }
 
-    public function validated(array $request): string
+    public function validated(array $request, bool $url = false): string
     {
-        return $this->validMod->validate($request);
+        return $this->validMod->validate($request, $url);
     }
 
     // TODO: Создать триггер на подобное &lt;script&gt;Test&lt;/script&gt;

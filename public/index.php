@@ -9,7 +9,7 @@ use Slim\Views\TwigMiddleware;
 
 ini_set('log_errors', true);
 ini_set('error_log', 'error_log');
-ini_set('display_errors', false);
+ini_set('display_errors', true);
 ini_set('error_reporting', E_ALL);
 
 // Не ругается на require(vendor/autoload.php)
@@ -68,7 +68,7 @@ $error = $app->addErrorMiddleware(true, true, true);
 $error->setErrorHandler(HttpNotFoundException::class, NotFound::class);
 
 $app->group('', include 'app/routes/root.php')
-    //->add('checkPathParameterMiddleware')
+    ->add('checkPathParameterMiddleware')
     ->add('serverMiddleware') // 3
     ->add('exceptionMiddleware') // 2
     ->add('csrf'); // 1

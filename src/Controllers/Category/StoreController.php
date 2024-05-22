@@ -24,11 +24,10 @@ class StoreController extends AbstractController
             return ResourceError::make(202, $error);
         }
 
-        $this->insert(self::CATEGORY, $collection);
+        $this->insert(self::REPO_CATEGORY, $collection);
 
-        // Удаление файлов кеша
-        $this->destroyCache(self::CACHE_TREE);
-        $this->destroyCache(self::CACHE_CATEGORY_LIST);
+        // Очистка кеша с категориями
+        $this->destroyCache(self::KEY_CATEGORIES);
 
         return ResourceSuccess::make(201, 'Запись добавлена!');
     }

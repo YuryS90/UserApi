@@ -7,27 +7,28 @@ use App\resources\ResourceError;
 use App\resources\ResourceSuccess;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Удаление
- * @property mixed|null $id
- */
+/** Удаление */
 class DeleteController extends AbstractController
 {
     /** @throws \Exception */
     protected function run(): Response
     {
-        foreach ($this->getCacheCategories(self::CACHE_CATEGORY_LIST, true) as $item) {
-            if ($item['parentId'] == $this->id) {
+        $categories = $this->cache([
+            'key' => self::KEY_CATEGORIES,
+            'repo' => self::REPO_CATEGORY,
+        ]);
+
+        foreach ($categories as $category) {
+            if ($category['parentId'] == $this->id) {
                 return ResourceError::make(202, 'Невозможно удалить родительскую категорию');
             }
         }
 
         // "Удаление" записи из БД
-        $this->delete(self::CATEGORY, $this->id);
+        $this->delete(self::REPO_CATEGORY, $this->id);
 
         // Удаление файла кеша чтобы обновился весь список для IndexController
-        $this->destroyCache(self::CACHE_TREE);
-        $this->destroyCache(self::CACHE_CATEGORY_LIST);
+        $this->destroyCache(self::KEY_CATEGORIES);
 
         return ResourceSuccess::make(200, 'Запись удалена!');
     }

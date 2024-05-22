@@ -35,6 +35,7 @@ class CheckForUnique extends AbstractValidate
             'product' => 'Такого товара нет!',
             'category' => 'Такой категории нет!',
             'color' => 'Такого цвета нет!',
+            'tag' => 'Такого тега нет!',
         ];
 
         return $messages[$name] ?? '';

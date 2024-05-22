@@ -23,7 +23,7 @@ class StoreController extends AbstractController
             return ResourceError::make(202, $error);
         }
 
-        $this->insert(self::COLOR, $collection);
+        $this->insert(self::REPO_COLOR, $collection);
 
         return ResourceSuccess::make(201, 'Запись добавлена!');
     }

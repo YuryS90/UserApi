@@ -5,19 +5,25 @@ namespace App\Controllers\User;
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * @property mixed|null $user
- * @property mixed|null $roles
- */
 class EditController extends AbstractController
 {
     private string $template = 'user/edit.twig';
 
+    /**
+     * @throws \Exception
+     */
     protected function run(): Response
     {
         return $this->render($this->template, [
-            'user' => $this->user ?? null,
-            'roles' => $this->roles,
+            'user' => $this->listByParams(self::REPO_USER, [
+                'usersJoin' => true,
+                'id' => $this->id
+            ]),
+
+            'roles' => $this->cache([
+                'key' => self::KEY_USER_ROLES,
+                'repo' => self::REPO_ROLE,
+            ])
         ]);
     }
 }

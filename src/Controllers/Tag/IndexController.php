@@ -4,19 +4,16 @@ namespace App\Controllers\Tag;
 
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Views\Twig;
 
 class IndexController extends AbstractController
 {
+    private string $template = 'tag/index.twig';
+
+    /** @throws \Exception */
     protected function run(): Response
     {
-        // Получаем список тегов
-        $tags = $this->tagRepo->filter([]);
-
-        $view = Twig::fromRequest($this->request);
-
-        return $view->render($this->response, 'tag/index.twig', [
-            'tags' => $tags,
+        return $this->render($this->template, [
+            'tags' => $this->getAllOrById(self::REPO_TAG)
         ]);
     }
 }

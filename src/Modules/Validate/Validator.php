@@ -12,56 +12,58 @@ class Validator
 
     private string $error = '';
 
-    /**
-     * @throws \ErrorException
-     * @throws \Exception
-     */
-    public function validate(array $collection): string
+    /** @throws \Exception */
+    public function validate(array $collection, bool $url = false): string
     {
-        foreach ($collection ?? [] as $name => $data) {
-            // Проверяем наличие атрибута
-            if (!isset($name)) {
-                throw new \Exception('Пустая коллекция');
+        if ($this->hasAttr($collection)) {
+            // Валидация параметров URL
+            if ($url) {
+                $this->execute([
+                    'data' => current($collection),
+                    'name' => key($collection)
+                ]);
+
+                return $this->error;
             }
 
-            // Пропускаем атрибут password_confirmation
-            if ($name === 'password_confirmation') {
-                continue;
+            // Валидация html полей
+            foreach ($collection as $name => $data) {
+
+                if ($name === 'password_confirmation') {
+                    continue;
+                }
+
+                // Если есть ошибка, прекращаем выполнение
+                if (!empty($this->error)) {
+                    break;
+                }
+
+                if ($name === 'password') {
+                    $confirm = "{$name}_confirmation";
+                    $dataConfirm = $collection[$confirm];
+                }
+
+                $this->execute([
+                    'data' => current($collection),
+                    'name' => key($collection),
+                    'confirm' => $dataConfirm ?? null,
+                ]);
             }
-
-            // Проверяем соответствие атрибута ключу правил
-            $rules = $this->rules();
-            if (!isset($rules[$name])) {
-                throw new \Exception("Правило c атрибутом {$name} не зарегистрировано!");
-            }
-
-            // Если есть ошибки, прекращаем выполнение
-            if (!empty($this->error)) {
-                break;
-            }
-
-            // Получаем правила для атрибута
-            $rules = $rules[$name];
-            $confirm = "{$name}_confirmation";
-            $dataConfirm = $collection[$confirm] ?? null;
-
-            // Выполняем валидацию
-            $this->execute($data, $rules, $name, $dataConfirm);
         }
 
         return $this->error;
     }
 
     /** @throws \Exception */
-    public function execute(string $data, string $rules, string $name, ?string $dataConfirm = ''): void
+    public function execute(array $payload): void
     {
         // Разбиваем строку, напр. "required|string|max:255"
-        $rules = explode('|', $rules);
+        $rules = explode('|', $this->rules()[$payload['name']]);
 
         foreach ($rules as $rule) {
             // Получаем название правила и массив параметров (если есть)
-            // array_pad(..., 2, null) переводит результат explode в массив длиной 2 элемента.
-            // Если элементов в исходном массиве меньше 2, то он заполняет массив значениями null
+            // array_pad(..., 2, null) переводит рез-т explode в массив длиной 2 элемента.
+            // Если эл-тов в исходном массиве меньше 2, то он заполняет массив значениями null
             // до тех пор, пока длина массива не станет равной 2.
             [$ruleName, $ruleParams] = array_pad(explode(':', $rule, 2), 2, null);
 
@@ -77,18 +79,38 @@ class Validator
             }
 
             // В каждом классе validate() возвращает bool - результат валидации
-            if (!$ruleClass->validate($data, explode(',', $ruleParams), $dataConfirm)) {
-                $this->error = $ruleClass->message($name, $ruleParams);
+            if (!$ruleClass->validate($payload['data'], explode(',', $ruleParams), $payload['confirm'] ?? null)) {
+                $this->error = $ruleClass->message($payload['name'], $ruleParams);
             }
         }
     }
 
+    /**
+     * Поиск зарегистрированного атрибута в rules()
+     * @throws \Exception
+     */
+    private function hasAttr(array $collection): bool
+    {
+        $rules = array_keys($this->rules());
+
+        foreach ($collection as $key => $value) {
+            // Если ключ отсутствует во втором массиве, возвращаем false
+            if (!in_array($key, $rules)) {
+                throw new \Exception("Правило c атрибутом {$key} не зарегистрировано!");
+            }
+        }
+
+        return true;
+    }
+
+    /** Зарегистрированные правила */
     private function rules(): array
     {
         return [
             // Для пользователей
             'email' => 'required|string|email|min:5|max:255|unique:users,email',
             'password' => 'required|string|min:8|password|confirmed',
+            'password_confirmation' => null,
             'name' => 'required|string',
             'address' => 'required|string',
             'roles_id' => 'required|integer',
@@ -105,6 +127,7 @@ class Validator
             'product' => 'required|integer|zero|unique:products,id',
             'category' => 'required|integer|zero|unique:categories,id',
             'color' => 'required|integer|zero|unique:colors,id',
+            'tag' => 'required|integer|zero|unique:tags,id',
         ];
     }
 }

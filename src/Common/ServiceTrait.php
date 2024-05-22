@@ -62,7 +62,7 @@ trait ServiceTrait
         return $routeContext->getRoute();
     }
 
-    public function getRouteArgument($name): ?string
+    public function getRouteArgument(string $name): ?string
     {
         return $this->getRoute()->getArgument($name) ?? null;
     }

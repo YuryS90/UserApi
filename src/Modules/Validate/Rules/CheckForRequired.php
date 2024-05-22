@@ -16,6 +16,7 @@ class CheckForRequired extends AbstractValidate
         $messages = [
             'email' => 'Заполните поле email!',
             'password' => 'Заполните поле password!',
+            'password_confirmation' => 'Заполните поле password_confirmation!',
             'name' => 'Заполните поле c именем!',
             'address' => 'Заполните поле c адресом!',
             'roles_id' => 'Необходимо выбрать роль!',
@@ -28,6 +29,7 @@ class CheckForRequired extends AbstractValidate
             'user' => 'Некорректный ID',
             'category' => 'Некорректный ID',
             'color' => 'Некорректный ID',
+            'tag' => 'Некорректный ID',
         ];
 
         return $messages[$name] ?? '';

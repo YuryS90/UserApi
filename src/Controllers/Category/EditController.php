@@ -5,10 +5,7 @@ namespace App\Controllers\Category;
 use App\Controllers\AbstractController;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * Отображение формы на редактирование
- * @property mixed|null $id
- */
+/** Отображение формы на редактирование */
 class EditController extends AbstractController
 {
     private string $template = 'category/edit.twig';
@@ -16,19 +13,14 @@ class EditController extends AbstractController
     /** @throws \Exception */
     protected function run(): Response
     {
-        //$this->dd($this->getAllOrSingle(self::CATEGORY, $this->id));
-        // array:6 [▼
-        //  "id" => 20
-        //  "parentId" => 16
-        //  "title" => "Звери"
-        //  "isDel" => 0
-        //  "created" => "2023-12-15 22:06:25"
-        //  "updated" => null
-        //]
+        $categories = $this->cache([
+            'key' => self::KEY_CATEGORIES,
+            'repo' => self::REPO_CATEGORY,
+        ]);
 
         return $this->render($this->template, [
-            'categories' => $this->getCacheCategories(self::CACHE_TREE) ?? [],
-            'categoryCurrent' => $this->getAllOrSingle(self::CATEGORY, $this->id) ?? [],
+            'categories' => $this->buildTree2($categories),
+            'categoryCurrent' => $categories[$this->id]
         ]);
     }
 }
