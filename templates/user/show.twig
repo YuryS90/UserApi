@@ -28,11 +28,11 @@
                     <div class="card">
                         <div class="card-header d-flex p-3">
                             <div class="mr-3">
-                                <a href="{{ url_for('user.edit', { 'user': user.id }) }}"
+                                <a href="{{ url_for('user.edit', { 'user': urlParam }) }}"
                                    class="btn btn-success">Редактировать</a>
                             </div>
 
-                            <form action="{{ url_for('user.delete', { 'user': user.id }) }}" method="post">
+                            <form action="{{ url_for('user.delete', { 'user': urlParam }) }}" method="post">
                                 {{ csrf_field() | raw }}
                                 <input type="hidden" name="_METHOD" value="DELETE">
                                 <input type="submit" class="btn btn-danger" value="Удалить">
@@ -41,16 +41,36 @@
 
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    {% for field in fields %}
+                                        <th>{{ field }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
                                 <tbody>
-
-                                {% for key, value in user %}
+                                {% for item in user %}
                                     <tr>
-                                        <th>{{ fields[key] }}</th>
-                                        <td>{{ value }}</td>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.email }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.address }}</td>
+                                        <td>{{ item.roles_id }}</td>
+                                        <td>{{ item.is_email }}</td>
                                     </tr>
                                 {% endfor %}
-
                                 </tbody>
+
+{#                                <tbody>#}
+
+{#                                {% for key, value in user %}#}
+{#                                    <tr>#}
+{#                                        <th>{{ fields[key] }}</th>#}
+{#                                        <td>{{ value }}</td>#}
+{#                                    </tr>#}
+{#                                {% endfor %}#}
+
+{#                                </tbody>#}
                             </table>
                         </div>
 

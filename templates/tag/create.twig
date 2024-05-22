@@ -25,7 +25,8 @@
         <div class="container-fluid">
             <div class="row">
                 <form id="quickForm" novalidate="novalidate"
-                      action="{{ url_for('tag.store') }}" method="post">
+{#                      action="{{ url_for('tag.store') }}" method="post">#}
+                      action="http://userapi/tags/" method="post">
 
                     <div class="form-group">
                         {{ csrf_field() | raw }}
