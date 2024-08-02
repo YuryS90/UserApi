@@ -3,71 +3,102 @@
 namespace App\Controllers\Product;
 
 use App\Controllers\AbstractController;
+use App\resources\ResourceError;
 use Psr\Http\Message\ResponseInterface as Response;
-
 
 class StoreController extends AbstractController
 {
     private string $renderError = 'user/create.twig';
 
+    /**
+     * @throws \Exception
+     */
     protected function run(): Response
     {
-        $request = $this->request->getParsedBody();
+        $product = $this->request->getParsedBody();
+        $images = $this->request->getUploadedFiles();
 
-        unset($request['csrf_name']);
-        unset($request['csrf_value']);
-
-
-        $tagIds = $request['tags'];
-        $colorIds = $request['colors'];
-
-        unset($request['tags']);
-        unset($request['colors']);
-
-
-        $this->dd($tagIds);
-        $this->insert(self::REPO_PRODUCT, $request);
-
-        // product_tags
-        //foreach ($tagIds as $id) {
-        //
+        $collection = $this->sanitization($product);
+        $error = $this->validated($collection);
+        $this->dd("error: $error");
+        //if (!empty($error)) {
+        //    return ResourceError::make(202, $error);
         //}
+
+        // Пришло ли preview_image (главное изображение)
+        if (isset($images['preview_image'])) {
+
+            $mainImg = $images['preview_image'];
+
+            // Если файл загружен, то перемещаем в public/images с уникальным именем и добавляем в $product новый элемент
+            if ($mainImg->getError() === UPLOAD_ERR_OK) {
+                $product['preview_image'] = $this->moveUploadedFile($this->paths['img'], $mainImg);
+            }
+        }
+
+        $tagsIds = $product['tags'] ?? null;
+        $colorsIds = $product['colors'] ?? null;
+
+        // Удаляем элементы tags и colors, т.к. их нет в табл.`products`
+        unset($product['tags']);
+        unset($product['colors']);
+
+        // (*Удалить, так как будет валидация на пустоту) Если article содержит данные
+        if (!empty($product['article'])) {
+
+            // Добавление нового продукта в табл.`products` и его же получение
+            $product = $this->insertGet($this->getClassName(), [
+                'article' => $product['article']
+            ], $product);
+        }
+
+        $gallery = [];
+
+        // Пришло ли image_list
+        if (isset($images['image_list'])) {
+            foreach ($images['image_list'] as $image) {
+
+                // Если файл был загружен, то перемещаем файл в public/images и присваиваем ему уникальное имя
+                if ($image->getError() === UPLOAD_ERR_OK) {
+                    $gallery[] = $this->moveUploadedFile($this->paths['img'], $image);
+                }
+            }
+        }
+
+        if (!empty($gallery)) {
+            foreach ($gallery as $item) {
+                //$this->dd($item);
+
+                // Добавление в табл.`galleries`
+                $this->insert(self::REPO_GALLERY, [
+                    'image_list' => $item,
+                    'product_id' => $product['id']
+                ]);
+            }
+        }
+
+        // К $product['id'] может относиться несколько $tagId
+        // TODO Добавить проверку на приходят ли теги
+        foreach ($tagsIds as $tagId) {
+
+            // Добавление в табл.`product_tags`
+            $this->insert(self::REPO_PRODUCT_TAGS, [
+                'tag_id' => $tagId,
+                'product_id' => $product['id']
+            ]);
+        }
+
+        // TODO Добавить проверку на приходят ли цвета
+        foreach ($colorsIds as $colorId) {
+
+            // Добавление в табл.`color_products`
+            $this->insert(self::REPO_COLOR_PRODUCTS, [
+                'color_id' => $colorId,
+                'product_id' => $product['id']
+            ]);
+        }
+
         $this->dd('ok');
-        //$uploadedFiles = $this->request->getUploadedFiles();
-
-        // Проверка, был ли загружен файл
-//        if (isset($uploadedFiles['preview_image'])) {
-//            $uploadedFile = $uploadedFiles['preview_image'];
-//$this->dd($uploadedFile, $uploadedFile->getClientFilename());
-//            // Далее можно обработать загруженный файл, например, переместить его в нужное место
-//            $targetPath = __DIR__ . '/../public/uploads/';
-//            $uploadedFile->moveTo($targetPath . $uploadedFile->getClientFilename());
-        //}//moveUploadedFile
-
-        // $uploadedFile = $uploadedFiles['example1'];
-        //    if ($uploadedFile->getError() === UPLOAD_ERR_OK) {
-        //        $filename = moveUploadedFile($directory, $uploadedFile);
-        //        $response->write('uploaded ' . $filename . '<br/>');
-        //    }
-
-        //$this->dd($request, $this->request->getUploadedFiles());
-        // Обработка данных
-        //$collection = $this->sanitization($request);
-        //$error = $this->validated($collection);
-//        if (!empty($error)) {
-//
-//            // Значит есть недопустимые данные
-//            return $this->render($this->renderError, [
-//                'error' => $error,
-//                'old' => $collection,
-//                'roles' => $this->roles ?? [],
-//            ]);
-//        }
-
-        // TODO как добавлять артикулы, нужно ли их генерировать
-        //          если да, то в зависимости от категории? Или это просто набор чисел
-        //      Перед добавлением генерировать артикул
-
 
         return $this->redirect('/products');
     }

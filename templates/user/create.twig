@@ -38,7 +38,7 @@
             <div class="row">
                 <form id="quickForm" novalidate="novalidate"
                       action="{{ url_for('user.store') }}" method="post">
-                    {{ csrf_field() | raw }}
+{#                    {{ csrf_field() | raw }}#}
 
                     <div class="form-group">
                         <input type="email" name="email" class="form-control"
@@ -70,7 +70,7 @@
                             <option disabled selected>Выбрать роль:</option>
 
                             {% for role in roles %}
-                                <option {{ old.roles_id == role.idRole ? ' selected' : '' }}
+                                <option {{ old.rolesId == role.idRole ? ' selected' : '' }}
                                         value="{{ role.idRole }}">{{ role.nameRole }}</option>
                             {% endfor %}
 

@@ -47,7 +47,7 @@ return [
             'error' => __DIR__ . '/../src/Modules/Log/storage/error.log',
             'success' => __DIR__ . '/../src/Modules/Log/storage/success.log',
         ],
-
         'cache' => dirname(__DIR__) . '/tmp/cache',
+        'img' => dirname(__DIR__) . '/public/images/',
     ]
 ];

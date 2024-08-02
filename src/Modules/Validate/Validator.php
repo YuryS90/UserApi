@@ -11,46 +11,43 @@ class Validator
     use ContainerTrait, HelperTrait;
 
     private string $error = '';
+    private string $key = '';
 
     /** @throws \Exception */
     public function validate(array $collection, bool $url = false): string
     {
-        if ($this->hasAttr($collection)) {
-            // Валидация параметров URL
-            if ($url) {
-                $this->execute([
-                    'data' => current($collection),
-                    'name' => key($collection)
-                ]);
-
-                return $this->error;
-            }
-
-            // Валидация html полей
-            foreach ($collection as $name => $data) {
-
-                if ($name === 'password_confirmation') {
-                    continue;
-                }
-
-                // Если есть ошибка, прекращаем выполнение
-                if (!empty($this->error)) {
-                    break;
-                }
-
-                if ($name === 'password') {
-                    $confirm = "{$name}_confirmation";
-                    $dataConfirm = $collection[$confirm];
-                }
-
-                $this->execute([
-                    'data' => current($collection),
-                    'name' => key($collection),
-                    'confirm' => $dataConfirm ?? null,
-                ]);
-            }
+        if (!$this->hasAttr($collection)) {
+            throw new \Exception("Правило c атрибутом {$this->key} не зарегистрировано!");
         }
 
+        // Валидация параметров URL
+        if ($url) {
+            $this->execute([
+                'value' => current($collection),
+                'name' => key($collection)
+            ]);
+            return $this->error;
+        }
+
+        // Валидация html полей
+        foreach ($collection as $name => $value) {
+            if ($name === 'password_confirmation') {
+                continue;
+            }
+
+            // Если есть ошибка, прекращаем выполнение
+            if (!empty($this->error)) {
+                break;
+            }
+
+            $confirm = ($name === 'password') ? ($collection['password_confirmation'] ?? null) : null;
+
+            $this->execute([
+                'value' => $value,
+                'name' => $name,
+                'confirm' => $confirm,
+            ]);
+        }
         return $this->error;
     }
 
@@ -69,18 +66,15 @@ class Validator
 
             // Получаем объект правила через фабрику
             $ruleClass = ValidateFactory::create($ruleName, $this->container);
+
             if (!is_object($ruleClass)) {
-                throw new \Exception("Объект с правилом {$ruleName}, {$ruleClass} не создан!");
+                throw new \Exception("Класс CheckFor<???> с соответствующим правилом не создан!");
             }
 
             // Если есть ошибки, прекращаем выполнение
-            if (!empty($this->error)) {
-                break;
-            }
-
-            // В каждом классе validate() возвращает bool - результат валидации
-            if (!$ruleClass->validate($payload['data'], explode(',', $ruleParams), $payload['confirm'] ?? null)) {
+            if (!$ruleClass->validate($payload['value'], explode(',', $ruleParams), $payload['confirm'] ?? null)) {
                 $this->error = $ruleClass->message($payload['name'], $ruleParams);
+                break;
             }
         }
     }
@@ -96,14 +90,14 @@ class Validator
         foreach ($collection as $key => $value) {
             // Если ключ отсутствует во втором массиве, возвращаем false
             if (!in_array($key, $rules)) {
-                throw new \Exception("Правило c атрибутом {$key} не зарегистрировано!");
+                $this->key = $key;
+                return false;
             }
         }
-
         return true;
     }
 
-    /** Зарегистрированные правила */
+    /** Поля подчинённые зарегистрированным правилам */
     private function rules(): array
     {
         return [
@@ -122,7 +116,17 @@ class Validator
             // Для цветов
             'code' => 'required|string|color|unique:colors,code',
 
-            // Для "{}" в маршрутах
+            // Для товаров
+            'article' => 'required|integer|unique:products,article',
+            'brand' => 'required|string',
+            'new_price' => 'required|decimal:2',
+            'old_price' => 'required|decimal:2',
+            'count' => 'required|integer',
+            'category_id' => 'required|integer',
+            'description' => 'required',
+            'colors' => 'required',
+
+            // Для аргументов "{}" в url
             'user' => 'required|integer|zero|unique:users,id',
             'product' => 'required|integer|zero|unique:products,id',
             'category' => 'required|integer|zero|unique:categories,id',

@@ -43,14 +43,14 @@ $app = AppFactory::create();
 $responseFactory = $app->getResponseFactory();
 
 // Register Middleware On Container
-$container->set('csrf', function () use ($responseFactory) {
-    return new Guard($responseFactory);
-});
+//*$container->set('csrf', function () use ($responseFactory) {
+//    return new Guard($responseFactory);
+//});
 
 $twig = Twig::create('templates', ['cache' => false, 'debug' => true]);
 
 $twig->addExtension(new \Twig\Extension\DebugExtension());
-$twig->addExtension(new \App\Modules\Views\CsrfExtension($container->get('csrf')));
+//*$twig->addExtension(new \App\Modules\Views\CsrfExtension($container->get('csrf')));
 $app->add(TwigMiddleware::create($app, $twig));
 
 $app->addRoutingMiddleware();
@@ -70,7 +70,7 @@ $error->setErrorHandler(HttpNotFoundException::class, NotFound::class);
 $app->group('', include 'app/routes/root.php')
     ->add('checkPathParameterMiddleware')
     ->add('serverMiddleware') // 3
-    ->add('exceptionMiddleware') // 2
-    ->add('csrf'); // 1
+    ->add('exceptionMiddleware');  // 2
+    //*->add('csrf');  // 1
 
 $app->run();

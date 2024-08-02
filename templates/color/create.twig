@@ -28,7 +28,7 @@
                       action="{{ url_for('color.store') }}" method="post">
 
                     <div class="form-group">
-                        {{ csrf_field() | raw }}
+{#                        {{ csrf_field() | raw }}#}
                         <input type="color" name="code" class="form-control" placeholder="Наименование">
                     </div>
 

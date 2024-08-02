@@ -37,27 +37,21 @@
     <section class="content">
         <div class="row">
             <div class="col-md-8">
-                <form action="{{ url_for('product.store') }}" method="post" enctype="multipart/form-data"
-                      novalidate="novalidate" id="quickForm">
-                    {{ csrf_field() | raw }}
+                <form action="{{ url_for('product.store') }}" method="post"
+                      id="product-form" enctype="multipart/form-data" novalidate="novalidate">
+                    {#                    {{ csrf_field() | raw }} #}
 
-                    <div class="form-group">
+                    <div class="form-group card-outline card-gray">
                         <input type="text" name="article" class="form-control"
                                placeholder="Введите артикул" value="{{ old.article }}">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="title" class="form-control"
+                        <input type="text" name="brand" class="form-control"
                                placeholder="Введите название товара" value="{{ old.title }}">
                     </div>
 
-                    <!-- Поля для описания (JSON) -->
-                    {#                    <div id="fields"></div> #}
-                    {#                    <div class="form-group"> #}
-                    {#                        <button type="button" id="addField" class="btn btn-info">Добавить описание</button> #}
-                    {#                    </div> #}
-
-                    <div class="form-group">
+                    <div class="form-group card-outline card-gray">
                         <input type="text" name="new_price" class="form-control"
                                placeholder="Введите актуальную цену" value="{{ old.article }}">
                     </div>
@@ -74,131 +68,63 @@
 
                     <div class="form-group">
                         <select name="category_id" aria-invalid="false" class="custom-select form-control-border">
-                            {#                                required> #}
+{#                                                            required> #}
                             <option value="" selected>Выбрать категорию:</option>
 
                             {{ macros.renderCategoryOptions(categories) }}
                         </select>
                     </div>
 
-                    {#                    <div class="btn btn-default btn-file"> #}
-                    {#                        <i class="fas fa-paperclip"></i> Attachment #}
-                    {#                        <input type="file" name="attachment"> #}
-                    {#                    </div> #}
 
-                    {#                    <div class="form-group"> #}
-                    {#                        <div class="input-group"> #}
-                    {#                            <div class="custom-file"> #}
-
-                    {#                                <input name="preview_image" type="file" class="custom-file-label" id="exampleInputFile"> #}
-                    {#                                <label class="custom-file-label" for="exampleInputFile">Выбрать файл</label> #}
-                    {#                            </div> #}
-                    {#                        </div> #}
-                    {#                    </div> #}
-
+{#                    <div class="form-group">#}
+{#                        <div class="select2-purple">#}
+{#                            <select name="tags[]" class="tags" multiple="multiple" data-placeholder="Выбрать тег(и)"#}
+{#                                    data-dropdown-css-class="select2-purple" style="width: 100%;">#}
+{#                                {% for tag in tags|default([]) %}#}
+{#                                    #}{#                                    <option {{ old.roles_id == role.idRole ? ' selected' : '' }} #}
+{#                                    <option value="{{ tag.id }}">{{ tag.title }}</option>#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                        </div>#}
+{#                    </div>#}
 
                     <div class="form-group">
-                        <div class="select2-purple">
-                            <select name="tags[]" class="tags" multiple="multiple" data-placeholder="Выбрать тег(и)"
-                                    data-dropdown-css-class="select2-purple" style="width: 100%;">
-                                {% for tag in tags %}
-                                    {#                                    <option {{ old.roles_id == role.idRole ? ' selected' : '' }} #}
-                                    <option value="{{ tag.id }}">{{ tag.title }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group card-outline card-info">
                         <div class="select2-purple">
                             <select name="colors[]" class="colors" multiple="multiple"
                                     data-placeholder="Выбрать цвет(а)"
                                     data-dropdown-css-class="select2-purple" style="width: 100%;">
-                                {% for color in colors %}
+                                {% for color in colors|default([]) %}
                                     <option value="{{ color.id }}">{{ color.code }}</option>
                                 {% endfor %}
                             </select>
+
+                            <input type="hidden" name="colors[]" value="">
                         </div>
                     </div>
 
-                    <div class="form-group card-outline card-info">
-                         <textarea name="description" id="summernote">
-                         </textarea>
+                    <div class="form-group">
+                        <textarea name="description" id="summernote"></textarea>
                     </div>
 
+{#                    <div class="form-group">#}
+{#                        <div class="btn btn-default btn-file">#}
+{#                            <i class="fas fa-paperclip"></i> Загрузка главного изображения#}
+{#                            <input type="file" name="preview_image" id="fileInput">#}
+{#                        </div>#}
+{#                        <div id="fileInfo" class="file-info"></div>#}
+{#                    </div>#}
+
+{#                    <div class="form-group">#}
+{#                        <div id="my-dropzone" class="dropzone"></div>#}
+{#                    </div>#}
+
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Добавить</button>
+                        <button type="submit" class="btn btn-outline-success badge-pill">Добавить</button>
                     </div>
 
                 </form>
             </div>
         </div>
     </section>
-
-    <script>
-        document.getElementById('addField').addEventListener('click', function () {
-            // querySelectorAll выбирает все элементы с атрибутом name, которые начинаются с "key"
-            // length возвращает количество найденных элементов
-            let currentNumber = document.querySelectorAll('[name^="key"]').length + 1;
-
-            // Создаем новый блок полей для характеристики
-            let newField = document.createElement('div');
-
-            // Добавляем классы к новому блоку
-            newField.classList.add('form-group');
-            newField.classList.add('d-flex');
-
-            newField.innerHTML = `
-                <input type="text" name="key${currentNumber}" class="form-control" placeholder="Название" required>
-                <input type="text" name="value${currentNumber}" class="form-control" placeholder="Значение" required>
-<!--<a class="btn btn-app">-->
-<!--<i class="fas fa-delete"></i> Edit-->
-<!--</a>-->
-                <button type="button" class="form-control col-2 btn btn-danger" onclick="removeField(this)">Удалить</button>
-            `;
-
-            // appendChild добавляет дочерний элемент newField к элементу с id = fields
-            document.getElementById('fields').appendChild(newField);
-        });
-
-        // Функция для удаления поля
-        function removeField(button) {
-            let fieldToRemove = button.parentElement;
-            fieldToRemove.remove();
-        }
-
-        {# document.getElementById('quickForm').addEventListener('submit', function (e) { #}
-        {#    e.preventDefault(); #}
-
-        {#    // Получаем данные из формы #}
-        {#    let formData = new FormData(this); #}
-
-        {#    // Собираем объект описания из полей ввода #}
-        {#    let description = {}; #}
-        {#    formData.forEach((value, key) => { #}
-        {#        // key.start... проверяет, начинается ли строка key с подстроки 'key' #}
-        {#        // formData.has... проверяет, есть ли в formData элемент с именем 'value' #}
-        {#        // и номером, который является подстрокой строки key, начиная с третьего символа (слова key) #}
-        {#        if (key.startsWith('key') && formData.has('value' + key.substring(3))) { #}
-        {#            // Добавляем характеристику в объект описания #}
-        {#            description[value] = formData.get('value' + key.substring(3)); #}
-        {#        } #}
-        {#    }); #}
-
-        {#    // Добавляем JSON-строку с описанием в данные формы #}
-        {#    formData.append('descriptionJSON', JSON.stringify(description)); #}
-
-        {#    // Отправляем форму на сервер #}
-        {#    fetch("{{ url_for('product.store') }}", { #}
-        {#        method: 'POST', #}
-        {#        body: formData #}
-        {#    }) #}
-        {#        .then(response => response.json()) #}
-        {#        .then(data => { #}
-        {#            // Обработка ответа от сервера, если необходимо #}
-        {#            console.log(data); #}
-        {#        }) #}
-        {#        .catch(error => console.error('Ошибка:', error)); #}
-        {# }); #}
-    </script>
 {% endblock %}
+

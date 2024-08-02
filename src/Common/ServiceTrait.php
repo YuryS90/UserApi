@@ -3,6 +3,7 @@
 namespace App\Common;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Slim\Psr7\Message;
 use Slim\Psr7\Response;
 use Slim\Routing\RouteContext;
@@ -143,5 +144,35 @@ trait ServiceTrait
         $view = Twig::fromRequest($this->request);
 
         return $view->render($this->response, $template, $params);
+    }
+
+    public function getClassName(): string
+    {
+        // Из строки "App\\Controllers\\Product\\StoreController" оставляю Product => product
+        // ([^\\\\]+) — захватывающая группа для извлечения названия сущности.
+        // Она ищет любую последовательность символов, кроме обратной косой черты.
+        preg_match(
+            '/^App\\\\Controllers\\\\([^\\\\]+)/',
+            get_class($this),
+            $match
+        );
+        return strtolower($match[1]);
+    }
+
+    /**
+     * @throws \Exception
+     * Перемещает файл, и присваивает ему уникальное имя.
+     * Возвращает название файла с уникальным именем.
+     */
+    public function moveUploadedFile(string $directory, UploadedFileInterface $image): string
+    {
+        $extension = pathinfo($image->getClientFilename(), PATHINFO_EXTENSION);
+
+        $basename = bin2hex(random_bytes(8));
+        $filename = sprintf('%s.%0.8s', $basename, $extension);
+
+        $image->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
+        return $filename;
     }
 }

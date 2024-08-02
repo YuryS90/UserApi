@@ -15,9 +15,9 @@ class IndexController extends AbstractController
     protected function run(): Response
     {
         // Имена полей таблицы users
-        $columns = $this->listByParams(self::REPO_PRODUCT_FIELD, [
-            'column' => true
-        ]);
+        //$columns = $this->listByParams(self::REPO_PRODUCT_FIELD, [
+        //    'column' => true
+        //]);
 
 
         // return $this->render($this->template, [
@@ -31,7 +31,12 @@ class IndexController extends AbstractController
 
         return $this->render($this->template, [
             'products' => $this->products ?? [],
-            'fields' => $this->setFieldOrder($columns, 'PROD')
+            //'fields' => $this->setFieldOrder($columns, 'PROD')
+           //'fields' => array_column(
+           //    $this->productRepo->getColumnsName(),
+           //    "Comment",
+           //    "Field"
+           //)
         ]);
     }
 }

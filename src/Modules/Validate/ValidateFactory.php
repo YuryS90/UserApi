@@ -13,6 +13,7 @@ class ValidateFactory
         'numeric' => ['class' => \App\Modules\Validate\Rules\CheckForNumeric::class],
         'string' => ['class' => \App\Modules\Validate\Rules\CheckForStr::class],
         'integer' => ['class' => \App\Modules\Validate\Rules\CheckForInt::class],
+        'decimal' => ['class' => \App\Modules\Validate\Rules\CheckForDecimal::class],
         'zero' => ['class' => \App\Modules\Validate\Rules\CheckForZero::class],
         'email' => ['class' => \App\Modules\Validate\Rules\CheckForEmail::class],
         'color' => ['class' => \App\Modules\Validate\Rules\CheckForColor::class],

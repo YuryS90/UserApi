@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Category;
+namespace App\Models\ColorProduct;
 
 use App\Database\Db;
 use App\Models\AbstractModel;
@@ -9,7 +9,7 @@ class Repo extends AbstractModel
 {
     protected static function getTable(): string
     {
-        return 'categories';
+        return 'color_products';
     }
 
     protected function applyCustomFilters(Db $query, array $params): void

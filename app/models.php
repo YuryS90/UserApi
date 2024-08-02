@@ -26,16 +26,20 @@ return [
         return new \App\Models\Color\Repo($container);
     },
 
-    'userFieldRepo' => function (ContainerInterface $container) {
-        return new \App\Models\User\Field\Repo($container);
-    },
-
-    'productFieldRepo' => function (ContainerInterface $container) {
-        return new \App\Models\Product\Field\Repo($container);
-    },
-
     'productRepo' => function (ContainerInterface $container) {
         return new \App\Models\Product\Repo($container);
+    },
+
+    'galleryRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Gallery\Repo($container);
+    },
+
+    'productTagsRepo' => function (ContainerInterface $container) {
+        return new \App\Models\ProductTag\Repo($container);
+    },
+
+    'colorProductsRepo' => function (ContainerInterface $container) {
+        return new \App\Models\ColorProduct\Repo($container);
     },
 
 ];

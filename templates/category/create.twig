@@ -29,7 +29,7 @@
                       action="{{ url_for('category.store') }}" method="post">
 
                     <div class="form-group">
-                        {{ csrf_field() | raw }}
+{#                        {{ csrf_field() | raw }}#}
                         <input type="text" name="title" class="form-control" placeholder="Наименование">
                     </div>
 

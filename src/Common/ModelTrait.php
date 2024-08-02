@@ -7,29 +7,48 @@ trait ModelTrait
     use ContainerTrait;
 
     /**
-     * Получение всех или текущей записей из одной таблицы БД
+     * Получение списка (все записи) или текущей записи из одной таблицы БД
      * @throws \Exception
      */
     public function getAllOrById(string $repository, ?int $id = null): ?array
     {
+        // TODO getListOrRecordById Получение списка (все записи) или записи по id
         $this->hasRepo($repository);
 
         if (isset($id)) {
-            // Текущий элемент по id
+            // Запись по id
             return $this->{$this->getRepoName($repository)}
                 ->filter($this->getByIdOption($id));
         }
 
-        // Все элементы
+        // {$this->getRepoName($repository)} - обращение к свойству, напр. $this->tagRepo->filter()
+        // Весь список
         return $this->{$this->getRepoName($repository)}->filter(['is_del' => 0]);
     }
 
+    public function getRecordByField(string $repository, array $param): ?array
+    {
+        $this->hasRepo($repository);
+
+        if (!isset($param)) {
+            return null;
+        }
+
+        return $this->{$this->getRepoName($repository)}->filter(array_merge($param, [
+            'is_del' => 0,
+            'single' => true
+        ]));
+
+    }
+
     /**
-     * По параметрам получаем конкретный список из одной или нескольких таблиц БД
+     * Получаем список взависимости от переданных параметров из одной или нескольких таблиц БД
      * @throws \Exception
      */
     public function listByParams(string $repository, array $params = []): ?array
     {
+        // TODO поменять на getJoinList - Получаем список из нескольких таблиц БД
+
         $this->hasRepo($repository);
 
         // Получение данных из таблиц users и user_roles
@@ -42,6 +61,7 @@ trait ModelTrait
                 ->filter(array_merge($this->getRoleOption(), ['is_del' => 0]));
         }
 
+        // TODO Вынести отдельным методом, т.к. результат не является списком
         if (isset($params['column'])) {
             return $this->{$this->getRepoName($repository)}
                 ->filter($this->getSchemaOption());
@@ -62,10 +82,15 @@ trait ModelTrait
         $this->{$this->getRepoName($repository)}->insertOrUpdate($payload);
     }
 
-    // Вставить и получить запись
-    public function insertAndTake()
+    /**
+     * Вставить и получить запись
+     * @throws \Exception
+     */
+    public function insertGet(string $repository, array $param, array $data): ?array
     {
+        $this->insert($repository, $data);
 
+        return $this->getRecordByField($repository, $param);
     }
 
     /** @throws \Exception */

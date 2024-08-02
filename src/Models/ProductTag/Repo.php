@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Category;
+namespace App\Models\ProductTag;
 
 use App\Database\Db;
 use App\Models\AbstractModel;
@@ -9,16 +9,16 @@ class Repo extends AbstractModel
 {
     protected static function getTable(): string
     {
-        return 'categories';
+        return 'product_tags';
     }
 
-    protected function applyCustomFilters(Db $query, array $params): void
+    protected function applyCustomFilters($query, array $params): void
     {
     }
 
     protected function executeQuery(Db $query, array $params): ?array
     {
-        $list = $query->exec()->listCamelCase('id');
+        $list = $query->exec()->list();
         return $list ?: null;
     }
 }

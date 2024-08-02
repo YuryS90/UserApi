@@ -64,7 +64,7 @@
                     'method': 'post'
                 });
 
-                form.append({{ csrf_field()|json_encode|raw }} );
+                {#form.append({{ csrf_field()|json_encode|raw }} );#}
                 form.append('<input type="hidden" name="_METHOD" value="DELETE">');
 
                 // Добавляем форму в тело документа и сразу отправляем

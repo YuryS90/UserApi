@@ -28,7 +28,7 @@ use Psr\Http\Message\ResponseInterface;
 class GetProductsOrProductMiddleware extends AbstractMiddleware
 {
     private array $params = [
-        'fields' => ['id', 'article', 'title', 'description', 'preview_image', 'new_price', 'old_price', 'count', 'category_id'],
+        'fields' => ['id', 'article', 'brand', 'description', 'preview_image', 'new_price', 'old_price', 'count', 'category_id'],
         'is_del' => 0
     ];
 
