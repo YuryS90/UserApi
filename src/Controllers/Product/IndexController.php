@@ -14,29 +14,13 @@ class IndexController extends AbstractController
 
     protected function run(): Response
     {
-        // Имена полей таблицы users
-        //$columns = $this->listByParams(self::REPO_PRODUCT_FIELD, [
-        //    'column' => true
-        //]);
-
-
-        // return $this->render($this->template, [
-        //     // Пользователи с учётом их ролей
-        //     'users' => $this->listByParams(self::REPO_USER, [
-        //         'usersJoin' => true
-        //     ]),
-        //     // Имена полей в нужном порядке
-        //     'fields' => $this->generateColumns($columns)
-        // ]);
-
         return $this->render($this->template, [
-            'products' => $this->products ?? [],
-            //'fields' => $this->setFieldOrder($columns, 'PROD')
-           //'fields' => array_column(
-           //    $this->productRepo->getColumnsName(),
-           //    "Comment",
-           //    "Field"
-           //)
+            'products' => $this->getAllOrById(self::REPO_PRODUCT),
+            'fields' => array_column(
+                $this->productRepo->getColumnsName(),
+                "Comment",
+                "Field"
+            )
         ]);
     }
 }

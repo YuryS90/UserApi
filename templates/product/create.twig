@@ -68,25 +68,32 @@
 
                     <div class="form-group">
                         <select name="category_id" aria-invalid="false" class="custom-select form-control-border">
-{#                                                            required> #}
+                            {#                                                            required> #}
                             <option value="" selected>Выбрать категорию:</option>
 
                             {{ macros.renderCategoryOptions(categories) }}
                         </select>
                     </div>
 
+                    <div class="form-group">
+                        <div class="select2-purple">
+                            <select name="tags[]" class="tags" multiple="multiple"
+                                    data-placeholder="Выбрать тег(и)"
+                                    data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                {% for tag in tags|default([]) %}
+                                    {#  <option {{ old.roles_id == role.idRole ? ' selected' : '' }} #}
+                                    {#  <option value="{{ tag.id }}">{{ tag.title }}</option> #}
+                                    {# Находится ли tag.id в массиве old.tags, если да, добавляем атрибут selected. #}
+{#                                    <option value="{{ tag.id }}" {{ tag.id in old.tags ? 'selected' : '' }}>#}
+{#                                        {{ tag.title }}#}
+{#                                    </option>#}
 
-{#                    <div class="form-group">#}
-{#                        <div class="select2-purple">#}
-{#                            <select name="tags[]" class="tags" multiple="multiple" data-placeholder="Выбрать тег(и)"#}
-{#                                    data-dropdown-css-class="select2-purple" style="width: 100%;">#}
-{#                                {% for tag in tags|default([]) %}#}
-{#                                    #}{#                                    <option {{ old.roles_id == role.idRole ? ' selected' : '' }} #}
-{#                                    <option value="{{ tag.id }}">{{ tag.title }}</option>#}
-{#                                {% endfor %}#}
-{#                            </select>#}
-{#                        </div>#}
-{#                    </div>#}
+                                    <option value="{{ tag.id }}">{{ tag.title }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="tags[]" value="">
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="select2-purple">
@@ -97,7 +104,6 @@
                                     <option value="{{ color.id }}">{{ color.code }}</option>
                                 {% endfor %}
                             </select>
-
                             <input type="hidden" name="colors[]" value="">
                         </div>
                     </div>
@@ -106,17 +112,17 @@
                         <textarea name="description" id="summernote"></textarea>
                     </div>
 
-{#                    <div class="form-group">#}
-{#                        <div class="btn btn-default btn-file">#}
-{#                            <i class="fas fa-paperclip"></i> Загрузка главного изображения#}
-{#                            <input type="file" name="preview_image" id="fileInput">#}
-{#                        </div>#}
-{#                        <div id="fileInfo" class="file-info"></div>#}
-{#                    </div>#}
+                    <div class="form-group">
+                        <div class="btn btn-default btn-file">
+                            <i class="fas fa-paperclip"></i> Загрузка главного изображения
+                            <input type="file" name="preview_image" id="fileInput">
+                        </div>
+                        <div id="fileInfo" class="file-info"></div>
+                    </div>
 
-{#                    <div class="form-group">#}
-{#                        <div id="my-dropzone" class="dropzone"></div>#}
-{#                    </div>#}
+                    <div class="form-group">
+                        <div id="my-dropzone" class="dropzone"></div>
+                    </div>
 
                     <div class="form-group">
                         <button type="submit" class="btn btn-outline-success badge-pill">Добавить</button>

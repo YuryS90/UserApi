@@ -34,6 +34,7 @@ class CheckForRequired extends AbstractValidate
             'category_id' => 'Необходимо выбрать категорию!',
             'description' => 'Необходимо ввести описание товара!',
             'colors' => 'Необходимо выбрать цвет(а)!',
+            'tags' => 'Необходимо выбрать тег(и)!',
 
             'user' => 'Некорректный ID',
             'category' => 'Некорректный ID',

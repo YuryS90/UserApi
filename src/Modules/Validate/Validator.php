@@ -125,6 +125,7 @@ class Validator
             'category_id' => 'required|integer',
             'description' => 'required',
             'colors' => 'required',
+            'tags' => 'required',
 
             // Для аргументов "{}" в url
             'user' => 'required|integer|zero|unique:users,id',

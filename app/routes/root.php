@@ -6,8 +6,7 @@ return function ($app) {
     $app->get('/', \App\Controllers\HomeController::class)->setName('home');
 
     // CRUD категорий, тегов, цветов, пользователей
-    $app->group('/products', include 'app/routes/product/product.php')
-        ->add('getProductsOrProductMiddleware');
+    $app->group('/products', include 'app/routes/product/product.php');
 
     $app->group('/categories', include 'app/routes/category/category.php');
 

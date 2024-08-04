@@ -17,8 +17,4 @@ return [
     'checkPathParameterMiddleware' => function (ContainerInterface $container) {
         return new \App\Middleware\CheckPathParameterMiddleware($container);
     },
-
-    'getProductsOrProductMiddleware' => function (ContainerInterface $container) {
-        return new App\Middleware\Products\GetProductsOrProductMiddleware($container);
-    },
 ];

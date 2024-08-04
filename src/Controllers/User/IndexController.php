@@ -12,52 +12,16 @@ class IndexController extends AbstractController
     /** @throws \Exception */
     protected function run(): Response
     {
-        // Имена полей таблицы users
-        //$columns = $this->listByParams(self::REPO_USER_FIELD, [
-        //    'column' => true
-        //]);
-
-        //$this->dd($this->setFieldOrder($columns, 'US'));
-        //array:6 [▼
-        //  "id" => "№"
-        //  "email" => "Почта"
-        //  "name" => "Имя"
-        //  "address" => "Адрес"
-        //  "roles_id" => "Роль"
-        //  "is_email" => "Подтверждение"
-        //]
-
-        //array:10 [▼
-        //  "id" => "№"
-        //  "email" => "Почта"
-        //  "password" => "Пароль"
-        //  "name" => "Имя"
-        //  "address" => "Адрес"
-        //  "roles_id" => "Роль"
-        //  "is_email" => "Подтверждение"
-        //  "is_del" => "Удалён?"
-        //  "created" => "Дата создания"
-        //  "updated" => "Дата изменения"
-        //]
-
-
-        //$this->dd(array_column(
-        //    $this->userRepo->getColumnsName(),
-        //    "Comment",
-        //    "Field"
-        //));
         return $this->render($this->template, [
-            // Пользователи с учётом их ролей
+            // Пользователи с названием ролей
             'users' => $this->listByParams(self::REPO_USER, [
                 'usersJoin' => true
             ]),
-            // Имена полей в нужном порядке
-            //'fields' => $this->setFieldOrder($columns, 'US')
-            'fields' => array_column(
-                $this->userRepo->getColumnsName(),
-                "Comment",
-                "Field"
-            )
+           'fields' => array_column(
+               $this->userRepo->getColumnsName(),
+               "Comment",
+               "Field"
+           )
         ]);
     }
 }

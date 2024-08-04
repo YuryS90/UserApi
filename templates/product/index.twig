@@ -39,16 +39,18 @@
                                 </thead>
 
                                 <tbody>
+
                                 {% if products %}
                                     {% for product in products %}
+
                                         <tr>
                                             <td>{{ product.id }}</td>
                                             <td><a href="{{ url_for('product.show', { 'product': product.id }) }}">
-                                                    {{ product.email }}</a></td>
-                                            <td>{{ product.name }}</td>
-                                            <td>{{ product.address }}</td>
-                                            <td>{{ product.roles_id }}</td>
-                                            <td>{{ product.is_email }}</td>
+                                                    {{ product.article }}</a></td>
+                                            <td>{{ product.brand }}</td>
+                                            <td>{{ product.description }}</td>
+                                            <td>{{ product.new_price }}</td>
+                                            <td>{{ product.old_price }}</td>
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
