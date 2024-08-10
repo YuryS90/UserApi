@@ -21,25 +21,32 @@ trait ModelTrait
                 ->filter($this->getByIdOption($id));
         }
 
-        // {$this->getRepoName($repository)} - обращение к свойству, напр. $this->tagRepo->filter()
+        // {$this->getRepoName($repository)} => $this->tagRepo->filter()
         // Весь список
         return $this->{$this->getRepoName($repository)}->filter(['is_del' => 0]);
     }
 
-    public function getRecordByField(string $repository, array $param): ?array
+    public function getByParams(string $repository, array $params): ?array
+    {
+        $this->hasRepo($repository);
+        return $this->{$this->getRepoName($repository)}->filter(array_merge($params, ['is_del' => 0]));
+    }
+
+    public function getSpecificColumns(string $repository, array $fields): ?array
     {
         $this->hasRepo($repository);
 
-        if (!isset($param)) {
-            return null;
-        }
+        // Получаем все поля со служебной инфой, в которой есть что нужно
+        $columns = $this->{$this->getRepoName($repository)}->getColumnsName();
 
-        return $this->{$this->getRepoName($repository)}->filter(array_merge($param, [
-            'is_del' => 0,
-            'single' => true
-        ]));
+        // Фильтруем только те столбцы, которые интересуют
+        $filteredColumns = array_filter($columns, function ($column) use ($fields) {
+            return in_array($column['Field'], $fields);
+        });
 
+        return array_column($filteredColumns, 'Comment', 'Field');
     }
+
 
     /**
      * Получаем список взависимости от переданных параметров из одной или нескольких таблиц БД
@@ -62,10 +69,11 @@ trait ModelTrait
         }
 
         // TODO Вынести отдельным методом, т.к. результат не является списком
-        if (isset($params['column'])) {
-            return $this->{$this->getRepoName($repository)}
-                ->filter($this->getSchemaOption());
-        }
+        // Этот код был в User\ShowController
+        //if (isset($params['column'])) {
+        //    return $this->{$this->getRepoName($repository)}
+        //        ->filter($this->getSchemaOption());
+        //}
 
         return null;
     }
@@ -82,12 +90,25 @@ trait ModelTrait
         $this->{$this->getRepoName($repository)}->insertOrUpdate($payload);
     }
 
+    private function getRecordByField(string $repository, array $param): ?array
+    {
+        if (!isset($param)) {
+            return null;
+        }
+
+        return $this->{$this->getRepoName($repository)}->filter(array_merge($param, [
+            'is_del' => 0,
+            'single' => true
+        ]));
+    }
+
     /**
      * Вставить и получить запись
      * @throws \Exception
      */
     public function insertGet(string $repository, array $param, array $data): ?array
     {
+        $this->hasRepo($repository);
         $this->insert($repository, $data);
 
         return $this->getRecordByField($repository, $param);
@@ -183,36 +204,37 @@ trait ModelTrait
     }
 
     /** Установка порядка полей таблиц */
-    public function setFieldOrder(array $columns, string $key): array
-    {
-        // Формирование в одномерный ассоциативный массив (поля в разнобой)
-        $fields = [];
-        foreach ($columns as $value) {
-            $fields[$value["cOLUMNNAME"]] = $value["cOLUMNCOMMENT"];
-        }
+    // *Этот метод в User\ShowController
+    //public function setFieldOrder(array $columns, string $key): array
+    //{
+    //    // Формирование в одномерный ассоциативный массив (поля в разнобой)
+    //    $fields = [];
+    //    foreach ($columns as $value) {
+    //        $fields[$value["cOLUMNNAME"]] = $value["cOLUMNCOMMENT"];
+    //    }
+//
+    //    // Нужный порядок полей таблицы
+    //    $desiredOrder = !empty($_ENV[$key]) ? unserialize($_ENV[$key]) : [];
+//
+    //    // Получаем поля в нужном порядке
+    //    uksort($fields, function ($a, $b) use ($desiredOrder) {
+    //        $aIndex = array_search($a, $desiredOrder);
+    //        $bIndex = array_search($b, $desiredOrder);
+    //        return $aIndex - $bIndex;
+    //    });
+//
+    //    return $fields;
+    //}
 
-        // Нужный порядок полей таблицы
-        $desiredOrder = !empty($_ENV[$key]) ? unserialize($_ENV[$key]) : [];
-
-        // Получаем поля в нужном порядке
-        uksort($fields, function ($a, $b) use ($desiredOrder) {
-            $aIndex = array_search($a, $desiredOrder);
-            $bIndex = array_search($b, $desiredOrder);
-            return $aIndex - $bIndex;
-        });
-
-        return $fields;
-    }
-
-    private function getSchemaOption(): array
-    {
-        return [
-            'fields' => ['COLUMN_COMMENT', 'COLUMN_NAME'],
-            'TABLE_SCHEMA' => true,
-            'TABLE_NAME' => true,
-            'COLUMN_NAME' => ['password', 'is_del', 'created', 'updated'],
-        ];
-    }
+    //private function getSchemaOption(): array
+    //{
+    //    return [
+    //        'fields' => ['COLUMN_COMMENT', 'COLUMN_NAME'],
+    //        'TABLE_SCHEMA' => true,
+    //        'TABLE_NAME' => true,
+    //        'COLUMN_NAME' => ['password', 'is_del', 'created', 'updated'],
+    //    ];
+    //}
 
     private function getByIdOption(int $id): array
     {

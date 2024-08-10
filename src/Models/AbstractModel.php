@@ -44,6 +44,14 @@ abstract class AbstractModel implements ModelInterface
             $q->where('is_del=%s', $params['is_del']);
         }
 
+        if (!empty($params['orderByIdDesc'])) {
+            $q->sql('ORDER BY id DESC');
+        }
+
+        if (isset($params['limit']) && isset($params['offset'])) {
+            $q->sql('LIMIT %d OFFSET %d', $params['limit'], $params['offset']);
+        }
+
         $list = $this->executeQuery($q, $params);
 
         return $list === null ? null : (!empty($params['single']) ? current($list) : $list);
@@ -51,6 +59,14 @@ abstract class AbstractModel implements ModelInterface
 
     public function getColumnsName(): array
     {
-        return $this->db->getColumnsName(static::getTable());
+        return $this->db->getColumnsName(static::getTable()) ?: [];
+    }
+
+    /**
+     * Количество всех записей
+     */
+    public function getCount(): int
+    {
+        return $this->db->result("SELECT COUNT(*) FROM " . static::getTable()) ?: 0;
     }
 }

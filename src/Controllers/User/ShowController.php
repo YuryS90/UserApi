@@ -15,9 +15,9 @@ class ShowController extends AbstractController
     protected function run(): Response
     {
         // Имена полей таблицы users
-        $columns = $this->listByParams(self::REPO_USER_FIELD, [
-            'column' => true
-        ]);
+        //$columns = $this->listByParams(self::REPO_USER_FIELD, [
+        //    'column' => true
+        //]);
 
         return $this->render($this->template, [
             // Пользователь + название его роли
@@ -26,7 +26,7 @@ class ShowController extends AbstractController
                 'id' => $this->id
             ])],
             // Имена полей в нужном порядке
-            'fields' => $this->setFieldOrder($columns, 'US'),
+            //'fields' => $this->setFieldOrder($columns, 'US'),
             // Параметр URL
             'urlParam' => $this->id
         ]);

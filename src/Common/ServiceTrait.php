@@ -12,6 +12,9 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * @property array $queryParams
+ */
 trait ServiceTrait
 {
     use HelperTrait;
@@ -144,6 +147,18 @@ trait ServiceTrait
         $view = Twig::fromRequest($this->request);
 
         return $view->render($this->response, $template, $params);
+    }
+
+    /**
+     * Получаем и обрабатываем данные пришедшие из GET
+     */
+    public function getQueryParams(): array
+    {
+        if (!$this->queryParams) {
+            $this->queryParams = $this->request->getQueryParams() ?? [];
+        }
+
+        return $this->queryParams;
     }
 
     public function getClassName(): string

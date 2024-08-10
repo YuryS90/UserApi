@@ -42,15 +42,17 @@
 
                                 {% if products %}
                                     {% for product in products %}
-
                                         <tr>
-                                            <td>{{ product.id }}</td>
                                             <td><a href="{{ url_for('product.show', { 'product': product.id }) }}">
                                                     {{ product.article }}</a></td>
                                             <td>{{ product.brand }}</td>
-                                            <td>{{ product.description }}</td>
+                                            <td>
+                                                <img src="/public/images/{{ product.preview_image|default('150x100.png') }}"
+                                                     class='img-fluid'
+                                                     {% if product.preview_image %}style='width:150px;height:100px'{% endif %}>
+                                            </td>
                                             <td>{{ product.new_price }}</td>
-                                            <td>{{ product.old_price }}</td>
+                                            <td>{{ product.count }}</td>
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
@@ -58,7 +60,109 @@
 
                             </table>
                         </div>
+                    </div>
 
+                    {# Пагинация #}
+                    <div class="container mt-5">
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+
+                                {# Количество отображаемых страниц: |1||2||3| #}
+                                {% set midSize = 3 %}
+
+                                {# Возможность перейти "В начало" #}
+                                {% if currentPage > midSize + 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link bg-dark text-white"
+                                           href="{{ url_for('product.index') }}?page=1" aria-label="Previous">
+                                            <span aria-hidden="true">В начало</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {# Возможность пролистывания в бок << #}
+                                {% if currentPage > 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link bg-dark text-white"
+                                           href="{{ url_for('product.index') }}?page={{ currentPage - 1 }}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+
+                                {# Если стр больше 10, то отрисовка 3 ссылок (сколько захотим) слева #}
+                                {#                {% if totalPages > 10 %} #}
+                                {#                    {% for midSize in range(midSize, 0) %} #}
+                                {#                        {% if (currentPageNum - midSize) > 0 %} #}
+
+                                {#                            <li class="page-item"> #}
+                                {#                                <a class="page-link bg-dark text-white" #}
+                                {#                                   href="/sensor/show/?page={{ currentPageNum - midSize }}"> #}
+                                {#                                    {{ currentPageNum - midSize }} #}
+                                {#                                </a> #}
+                                {#                            </li> #}
+
+                                {#                        {% endif %} #}
+                                {#                    {% endfor %} #}
+                                {#                {% endif %} #}
+
+                                {# Отображение страниц слева от текущей: |1||2||3(current)| #}
+                                {% for midSize in range(midSize, 1) %}
+                                    {% if  (currentPage - midSize) > 0 %}
+                                        <li class="page-item">
+                                            <a class="page-link bg-dark text-white"
+                                               href="{{ url_for('product.index') }}?page={{ currentPage - midSize }}">
+                                                {{ currentPage - midSize }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {# Текущая #}
+                                <li class="page-item active">
+                                    <a class="page-link bg-dark text-white"
+                                       href="{{ url_for('product.index') }}?page={{ currentPage }}">
+                                        {{ currentPage }}</a>
+                                </li>
+
+                                {# Отображение страниц справа от текущей: |1(current)||2||3| #}
+                                {% set i = 1 %}
+                                {% for i in range(i, midSize) %}
+                                    {% if  (currentPage + i) <= totalPages %}
+                                        <li class="page-item">
+                                            <a class="page-link bg-dark text-white"
+                                               href="{{ url_for('product.index') }}?page={{ currentPage + i }}">
+                                                {{ currentPage + i }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {# Возможность пролистывания в бок >> #}
+                                {% if currentPage < totalPages %}
+                                    <li class="page-item">
+                                        <a class="page-link bg-dark text-white"
+                                           href="{{ url_for('product.index') }}?page={{ currentPage + 1 }}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {# Возможность пролистывания на последнюю #}
+                                {% if currentPage < (totalPages - midSize) %}
+                                    <li class="page-item">
+                                        <a class="page-link bg-dark text-white"
+                                           href="{{ url_for('product.index') }}?page={{ totalPages }}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">В конец</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
