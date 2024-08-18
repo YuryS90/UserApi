@@ -11,14 +11,16 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class ShowController extends AbstractController
 {
-    private string $template = 'user/show.twig';
+    private string $template = 'product/show.twig';
 
     protected function run(): Response
-    {$this->dd($this->categories);
-        $this->dd('show');
+    {
+
+        // TODO http://userapi/products/api - такого пути нет, но перешло на show
+
         return $this->render($this->template, [
-            'user' => $this->user ?? null,
-            'fields' => $this->fields ?? []
+            //'user' => $this->user ?? null,
+            //'fields' => $this->fields ?? []
         ]);
     }
 }

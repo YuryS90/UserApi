@@ -113,11 +113,17 @@ trait ServiceTrait
             $this->response = new Response();
         }
 
+        // Вместо этого...
         if ($token) {
             $data['token'] = $token;
         }
 
-        // Запись ответа в Body
+        // Это...
+        //if ($data['token']) {
+        //    $payload['token'] = $data['token'];
+        //}
+
+        // Запись ответа в Body (вместо $data передавать $payload)
         $this->response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
 
         return $this->response

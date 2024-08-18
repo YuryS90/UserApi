@@ -15,6 +15,14 @@ ini_set('error_reporting', E_ALL);
 // Не ругается на require(vendor/autoload.php)
 chdir(__DIR__ . '/../');
 
+// Если это источник, с которого разрешены запросы, то добавляем заголовки CORS
+// Если запрос содержит учетные данные (файлы cookie, заголовки авторизации или клиентские сертификаты TLS)
+// то Access-Control-Allow-Credentials:true
+if (!empty($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === 'http://localhost:5173') {
+    header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+    header('Access-Control-Allow-Credentials:true');
+}
+
 // Подключаем autoload
 require 'vendor/autoload.php';
 

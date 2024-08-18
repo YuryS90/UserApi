@@ -10,7 +10,7 @@ class IndexController extends AbstractController
     // Количество данных на n-й стр
     const LIMIT = 5;
 
-    private array $fields = ['article', 'brand', 'preview_image', 'new_price', 'count'];
+    private array $fields = ['id', 'article', 'brand', 'preview_image', 'new_price', 'count'];
 
     private string $template = 'product/index.twig';
 
