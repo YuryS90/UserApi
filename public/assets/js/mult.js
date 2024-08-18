@@ -1,4 +1,6 @@
-import Dropzone from "dropzone";
+// Импортируйте Dropzone
+import Dropzone from 'admin-lte/node_modules/dropzone';
+//import Dropzone from "dropzone";
 
 // Отключает автоматическое обнаружение всех форм Dropzone на странице
 Dropzone.autoDiscover = false;

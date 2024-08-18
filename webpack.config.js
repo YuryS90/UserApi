@@ -1,4 +1,6 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV === "development"
 const isProd = !isDev
@@ -7,8 +9,11 @@ console.log('IS DEV:', isDev)
 module.exports = {
     mode: "development",
 
+    devtool: isDev ? 'source-map' : false, // Включение source-map в режиме разработки
+
     entry: {
         main: path.resolve(__dirname, 'public/assets/js', 'index.js'),
+        index: path.resolve(__dirname, 'public/assets/js', 'lte.js'),
     },
 
     output: {
@@ -21,8 +26,16 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"]
-            },
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
+            }
         ]
     },
+
+    plugins: [
+        new HtmlWebpackPlugin(),
+
+        new MiniCssExtractPlugin({
+            filename: "[name].[contenthash].css"
+        })
+    ],
 }

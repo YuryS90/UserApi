@@ -1,5 +1,5 @@
 import './menu'
-import './validate'
+//import './validate'
 import './mult'
 import '../css/dropzone.min.css'
 

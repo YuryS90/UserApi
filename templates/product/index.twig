@@ -43,6 +43,7 @@
                                 {% if products %}
                                     {% for product in products %}
                                         <tr>
+                                            <td>{{ product.id }}</td>
                                             <td><a href="{{ url_for('product.show', { 'product': product.id }) }}">
                                                     {{ product.article }}</a></td>
                                             <td>{{ product.brand }}</td>
