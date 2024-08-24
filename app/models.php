@@ -42,4 +42,12 @@ return [
         return new \App\Models\ColorProduct\Repo($container);
     },
 
+    'testRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Test\Repo($container);
+    },
+
+    'favoritesRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Favorite\Repo($container);
+    },
+
 ];

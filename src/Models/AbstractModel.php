@@ -44,10 +44,28 @@ abstract class AbstractModel implements ModelInterface
             $q->where('is_del=%s', $params['is_del']);
         }
 
+        if (!empty($params['search'])) {
+            $q->where('title LIKE %s', "%{$params['search']}%");
+        }
+
+        // applyCustomSorting()
         if (!empty($params['orderByIdDesc'])) {
             $q->sql('ORDER BY id DESC');
         }
 
+        if (!empty($params['orderByTitleAsc'])) {
+            $q->sql('ORDER BY title ASC');
+        }
+
+        if (!empty($params['orderByPriceAsc'])) {
+            $q->sql('ORDER BY price ASC');
+        }
+
+        if (!empty($params['orderByPriceDesc'])) {
+            $q->sql('ORDER BY price DESC');
+        }
+
+        // applyCustomLimit()
         if (isset($params['limit']) && isset($params['offset'])) {
             $q->sql('LIMIT %d OFFSET %d', $params['limit'], $params['offset']);
         }
