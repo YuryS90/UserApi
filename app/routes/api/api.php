@@ -9,9 +9,13 @@ return function ($app)
     $app->get('/products[/]', \App\Controllers\Api\Product\IndexController::class);
 
 
+    // Весь список закладок: http://userapi/api/favorites
     $app->get('/favorites[/]', \App\Controllers\Api\Favorite\IndexController::class);
-
     $app->post('/favorites[/]', \App\Controllers\Api\Favorite\StoreController::class);
+    // http://userapi/api/favorites/1
+    $app->delete('/favorites/{id}[/]', \App\Controllers\Api\Favorite\DeleteController::class);
 
-    $app->delete('/favorites/{product}[/]', \App\Controllers\Api\Favorite\DeleteController::class);
+
+    // http://userapi/api/orders
+    $app->post('/orders[/]', \App\Controllers\Api\Order\StoreController::class);
 };

@@ -9,6 +9,12 @@ class IndexController extends AbstractController
 {
     protected function run(): Response
     {
+        //$urlParams = $this->getQueryParams() ?? [];
+        //$this->dd($urlParams); // _relations=user
+        // вернуть:
+        // id: 1,
+        // item: {id: 6, title: "Кроссовки Black Edition", price: 16999, imageUrl: "..."}
+
         // 1) Запрос ГЕТ на получение всех закладок
         //    Ответ: [{"id": 1, "product_id": 2}, {"id": 2, "product_id": 9} ...]
         $favorites = $this->favoritesRepo->filter([]) ?? [];

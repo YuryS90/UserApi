@@ -18,6 +18,8 @@ class CheckForZero extends AbstractValidate
             'category' => 'Некорректный ID',
             'color' => 'Некорректный ID',
             'tag' => 'Некорректный ID',
+
+            'id' => 'Некорректный ID',
         ];
 
         return $messages[$name] ?? '';

@@ -21,4 +21,10 @@ class Repo extends AbstractModel
         $list = $query->exec()->list();
         return $list ?: null;
     }
+
+    public function insertOrUpdate(array $params)
+    {
+        // Вставляем или обновляем запись и сразу получаем ID
+        return $this->db->insert(static::getTable(), $params)->id();
+    }
 }

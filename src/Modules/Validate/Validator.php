@@ -133,6 +133,8 @@ class Validator
             'category' => 'required|integer|zero|unique:categories,id',
             'color' => 'required|integer|zero|unique:colors,id',
             'tag' => 'required|integer|zero|unique:tags,id',
+
+            'id' => 'required|integer|zero',
         ];
     }
 }

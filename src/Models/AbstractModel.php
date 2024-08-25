@@ -19,7 +19,7 @@ abstract class AbstractModel implements ModelInterface
 
     abstract protected function executeQuery(Db $query, array $params): ?array;
 
-    public function insertOrUpdate(array $params): void
+    public function insertOrUpdate(array $params)
     {
         $this->db->insert(static::getTable(), $params, true);
     }
@@ -86,5 +86,10 @@ abstract class AbstractModel implements ModelInterface
     public function getCount(): int
     {
         return $this->db->result("SELECT COUNT(*) FROM " . static::getTable()) ?: 0;
+    }
+
+    public function remove(int $id)
+    {
+        $this->db->query("DELETE FROM " . static::getTable() . ' WHERE id=%d ', $id);
     }
 }

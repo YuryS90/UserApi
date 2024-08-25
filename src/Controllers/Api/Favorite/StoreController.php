@@ -13,9 +13,8 @@ class StoreController extends AbstractController
         //    Ответ: вернуть созданный объект [{"id": 1, "product_id": 2}]
         $favorite = $this->request->getParsedBody();
 
-        $this->dd($favorite);
-        $this->favoritesRepo->insertOrUpdate([]) ?? [];
+        $id = $this->favoritesRepo->insertOrUpdate($favorite) ?? [];
 
-        return $this->responseJson(201, []);
+        return $this->responseJson(201, ['id' => $id, 'message' => 'Добавлено в закладки!']);
     }
 }

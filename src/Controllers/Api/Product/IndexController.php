@@ -13,6 +13,7 @@ class IndexController extends AbstractController
 
         $filterOptions = [];
 
+        // TODO а если в searchTitle приходит не существующее значение
         // Если есть параметр поиска, добавляем его в фильтр
         if (!empty($urlParams['searchTitle'])) {
             $filterOptions['search'] = $urlParams['searchTitle'];
@@ -31,7 +32,7 @@ class IndexController extends AbstractController
         }
 
         // Выполняем один запрос с полученными параметрами
-        $products = $this->testRepo->filter($filterOptions);
+        $products = $this->testRepo->filter($filterOptions) ?? [];
 
         return $this->responseJson(200, $products);
     }
