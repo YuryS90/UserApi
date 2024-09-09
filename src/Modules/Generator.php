@@ -5,6 +5,10 @@ namespace App\Modules;
 use App\Modules\Main\Module;
 use Firebase\JWT\JWT;
 
+/**
+ * @property mixed|null $jwt
+ * @property mixed|null $generate
+ */
 class Generator extends Module
 {
     // TODO Сделать статическим свойство, в которое поместим результат $this->generate['password']
@@ -13,7 +17,7 @@ class Generator extends Module
      * Генерация пароля
      * @throws \Exception
      */
-    public function password(int $length = 10): string
+    public function createPassword(int $length = 10): string
     {
         $characters = $this->generate['password'];
         $password = '';
@@ -25,25 +29,20 @@ class Generator extends Module
         return $password;
     }
 
-    public function genToken(array $user): string
+    public function createToken(array $user): string
     {
-        // TODO Как правильно генерировать токен, где его нужно хранить
-        //      Как его использовать
-        //      Вынести в конфиг
-        //$this->dd($user);
-
         // Секретный ключ для подписи токена
-        $key = 'my_secret_key';
+        $key = $this->jwt['secret'];
 
         // Параметры (iss, aud, iat, nbf, exp) помогают контролировать безопасность и
         // проверить подлинность и целостность токена при его получении и обработке.
         $payload = [
             // Issuer указывает на издателя токена для проверки подлинности, т.е. идентифицирует приложение
-            'iss' => 'my_issuer',
+            'iss' => 'http://userapi',
 
             // Audience определяет аудиторию или получателя токена,
             // представляющий идентификатор или URL-адрес аудитории моего приложения.
-            'aud' => 'my_audience',
+            'aud' => ['http://localhost:5173', 'http://userapi'],
 
             // Время выдачи токена в формате Unix timestamp.
             // Обычно это текущее время или время начала действия токена.
@@ -55,12 +54,12 @@ class Generator extends Module
 
             // Время истечения срока действия токена в формате Unix timestamp.
             // После истечения клиент должен повторно запросить новый токен
-            'exp' => time() + (60 * 60), // истекает через 1 час
+            //'exp' => time() + (60 * 60), // истекает через 1 час
+            'exp' => time() + 60, // истекает через 1 мин
             //'exp' => time() + 86400 // истекает через 1 день
 
             'data' => [
                 'id' => $user['id'],
-                'login' => $user['login'],
                 'email' => $user['email'],
                 'rolesId' => $user['rolesId'],
             ]

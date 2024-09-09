@@ -18,4 +18,9 @@ return function ($app)
 
     // http://userapi/api/orders
     $app->post('/orders[/]', \App\Controllers\Api\Order\StoreController::class);
+
+    // http://userapi/api/users/signup
+    $app->post('/users/signup[/]', \App\Controllers\Api\User\StoreController::class);
+    $app->post('/users/signin[/]', \App\Controllers\Api\User\AuthorizationController::class);
+    $app->post('/users/me[/]', \App\Controllers\Api\User\ProfileController::class);
 };

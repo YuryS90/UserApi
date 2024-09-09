@@ -25,18 +25,18 @@ class Email extends Module
         $this->mailer->isSMTP();
 
         // Адрес и порт SMTP-сервера
-        $this->mailer->Host = $this->config['host'] ?? '';
-        $this->mailer->Port = intval($this->config['port'] ?? 0);
+        $this->mailer->Host = $this->settings['email']['host'] ?? '';
+        $this->mailer->Port = intval($this->settings['email']['port'] ?? 0);
 
         // Протокол шифрования SSL/TLS (тип безопасного соединения)
-        $this->mailer->SMTPSecure = $this->config['secure'] ?? '';
+        $this->mailer->SMTPSecure = $this->settings['email']['secure'] ?? '';
 
         // Параметры аутентификации, которые используются для авторизации на SMTP-сервере
-        if (!empty($this->config['name']) && !empty($this->config['password'])) {
+        if (!empty($this->settings['email']['name']) && !empty($this->settings['email']['password'])) {
             // true - определяет, требуется ли аутентификация для подключения
             $this->mailer->SMTPAuth = true;
-            $this->mailer->Username = $this->config['name'];
-            $this->mailer->Password = $this->config['password'];
+            $this->mailer->Username = $this->settings['email']['name'];
+            $this->mailer->Password = $this->settings['email']['password'];
         }
 
         // Отображение сообщения об ошибках на русском
@@ -47,10 +47,10 @@ class Email extends Module
     private function configSending(): void
     {
         // Чтобы почта приходила без иероглифов
-        $this->mailer->CharSet = $this->config['charset'] ?? 'UTF-8';
+        $this->mailer->CharSet = $this->settings['email']['charset'] ?? 'UTF-8';
 
         // Тема сообщения
-        $this->mailer->Subject = $this->config['subject'] ?? '';
+        $this->mailer->Subject = $this->settings['email']['subject'] ?? '';
 
         // Установка HTML-шаблона в тело письма
         $this->mailer->isHTML(true);
@@ -60,16 +60,17 @@ class Email extends Module
      * Отправка на почту
      * @throws Exception
      */
-    public function sendEmail($data): void
+    public function sendEmail(array $data): void
     {
         try {
             $this->configSMTP();
 
             // Отправитель и получатель
-            if (!empty($this->config['fromAddress'])) {
-                $this->mailer->setFrom($this->config['fromAddress'], 'User API');
+            if (!empty($this->settings['email']['fromAddress'])) {
+                $this->mailer->setFrom($this->settings['email']['fromAddress'], 'User API');
                 $this->mailer->addAddress($data['email']);
             }
+
             $this->configSending();
 
             $this->mailer->Body = $this->renderTemplate($data);
@@ -99,7 +100,9 @@ class Email extends Module
 
         // Замена переменных в шаблоне
         return str_replace(
-            ['{{login}}', '{{pwd}}'], [$data['login'], $data['pwd']], $this->templatesCache[$templatePath]
+            ['{{email}}', '{{password}}'],
+            [$data['email'], $data['password']],
+            $this->templatesCache[$templatePath]
         );
     }
 }

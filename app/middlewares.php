@@ -17,4 +17,8 @@ return [
     'checkPathParameterMiddleware' => function (ContainerInterface $container) {
         return new \App\Middleware\CheckPathParameterMiddleware($container);
     },
+
+    'jwtAuthMiddleware' => function (ContainerInterface $container) {
+        return new \App\Middleware\JwtAuthMiddleware($container);
+    },
 ];

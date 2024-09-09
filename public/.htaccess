@@ -1,4 +1,8 @@
 RewriteEngine On
+ # Правило для передачи заголовка Authorization
+ RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+ # Основные правила маршрутизации
  RewriteCond %{REQUEST_FILENAME} !-f
  RewriteCond %{REQUEST_FILENAME} !-d
  RewriteRule ^(.*)$ / [QSA,L]

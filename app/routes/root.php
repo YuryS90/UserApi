@@ -7,8 +7,6 @@ return function ($app) {
 
     $app->group('/api', include 'app/routes/api/api.php');
 
-    $app->get('/test', \App\Controllers\TestController::class)->setName('test');
-
     // CRUD категорий, тегов, цветов, пользователей
     $app->group('/products', include 'app/routes/product/product.php');
 

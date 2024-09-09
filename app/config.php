@@ -25,6 +25,10 @@ return [
         ],
     ],
 
+    'jwt' => [
+        'secret' => $_ENV['JWT_SECRET'],
+    ],
+
     'generate' => [
         'password' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&()-_=+'
     ],
