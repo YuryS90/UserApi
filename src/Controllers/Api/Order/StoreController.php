@@ -9,35 +9,30 @@ class StoreController extends AbstractController
 {
     protected function run(): Response
     {
-
         $order = $this->request->getParsedBody();
-        $this->dd($order);
-        // array:2 [
-        //  "items" => array:2 [
-        //    0 => array:7 [
-        //      "id" => 12
-        //      "title" => "Кроссовки Converse Chuck Taylor All-Star"
-        //      "price" => 13000
-        //      "imageUrl" => "http://userapi/public/images/sneakers-12.jpg"
-        //      "isFavorite" => false
-        //      "favoriteId" => null
-        //      "isAdded" => true
-        //    ]
-        //    1 => array:7 [
-        //      "id" => 6
-        //      "title" => "Кроссовки Black Edition"
-        //      "price" => 16999
-        //      "imageUrl" => "http://userapi/public/images/sneakers-6.jpg"
-        //      "isFavorite" => true
-        //      "favoriteId" => 26
-        //      "isAdded" => true
-        //    ]
-        //  ]
-        //  "totalPrice" => 29999
-        //]
+        $jwt = $this->request->getAttribute('jwt_token')['data'];
 
-        $id = $this->orderRepo->insertOrUpdate([]) ?? [];
+        // Сделать проверку приходит ли токен, если нет то 401
 
-        return $this->responseJson(201, ['id' => $id, 'message' => 'Заказ оформлен!']);
+        // Сделать проверку на total_price иначе пользователь придумает свою сумму
+        // и только после этого добавить заказ
+
+        $orderId = $this->orderRepo->insertOrUpdate([
+            'user_id' => $jwt->id,
+            'total_price' => $order['totalPrice'],
+            'status_id' => 1
+        ]);
+
+        foreach ($order['items'] as $item) {
+            $this->orderItemRepo->insertOrUpdate([
+                'order_id' => $orderId,
+                'test_id' => $item
+            ]);
+        }
+
+        return $this->responseJson(201, [
+            'orderNo' => $orderId,
+            'message' => 'Заказ оформлен!'
+        ]);
     }
 }

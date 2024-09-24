@@ -9,34 +9,40 @@ class IndexController extends AbstractController
 {
     protected function run(): Response
     {
-        $urlParams = $this->getQueryParams() ?? [];
+        $jwt = $this->request->getAttribute('jwt_token')['data'];
 
-        $favorites = $this->favoritesRepo->filter([]) ?? [];
+        // Получаем закладки по id пользователя
+        $favorites = $this->favoritesRepo->filter(['user_id' => $jwt->id]);
 
         // Вернуть все закладки в урезанном формате чтобы просто клиент смог отобразить нужную svg
         $response = $favorites;
 
-        // Если передаётся _relations, то возвращаются закладки в формате чтобы клиент отобразил товары
-        if (!empty($urlParams['_relations'])) {
-            $products = $this->testRepo->filter([]) ?? [];
+        if (!empty($this->getQueryParams())) {
 
-            // Обновление массива, в котором ключи меняются на значения из столбца 'id'
-            $products = array_column($products, null, 'id');
+            $urlParams = $this->getQueryParams();
 
-            // Фильтрует все $favorites, оставляя только те элементы, для которых условие будет true
-            $favorites = array_filter(
-                $favorites,
-                fn($favorite) => isset($products[$favorite['test_id']])
-            );
+            // Если передаётся _relations, то возвращаются закладки в формате чтобы клиент отобразил товары
+            if (!empty($urlParams['_relations'])) {
+                $products = $this->testRepo->filter([]) ?? [];
 
-            // Отфильтрованный массив преобразуется в нужный формат для отображения всех данных товара
-            // На каждой итерации для каждого элемента fn возвращает соответствующий элемент по ключу test_id.
-            $response = array_map(
-                fn($favorite) => $products[$favorite['test_id']],
-                $favorites
-            );
+                // Обновление массива, в котором ключи меняются на значения из столбца 'id'
+                $products = array_column($products, null, 'id');
+
+                // Фильтрует все $favorites, оставляя только те элементы, для которых условие будет true
+                $favorites = array_filter(
+                    $favorites,
+                    fn($favorite) => isset($products[$favorite['test_id']])
+                );
+
+                // Отфильтрованный массив преобразуется в нужный формат для отображения всех данных товара
+                // На каждой итерации для каждого элемента fn возвращает соответствующий элемент по ключу test_id.
+                $response = array_map(
+                    fn($favorite) => $products[$favorite['test_id']],
+                    $favorites
+                );
+            }
         }
 
-        return $this->responseJson(200, $response);
+        return $this->responseJson(200, $response ?? []);
     }
 }
