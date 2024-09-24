@@ -50,4 +50,20 @@ return [
         return new \App\Models\Favorite\Repo($container);
     },
 
+    'orderRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Order\Repo($container);
+    },
+
+    'orderItemRepo' => function (ContainerInterface $container) {
+        return new \App\Models\OrderItem\Repo($container);
+    },
+
+    'refreshSessionsRepo' => function (ContainerInterface $container) {
+        return new \App\Models\RefreshSessions\Repo($container);
+    },
+
+    'statusRepo' => function (ContainerInterface $container) {
+        return new \App\Models\Status\Repo($container);
+    },
+
 ];

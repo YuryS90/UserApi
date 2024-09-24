@@ -9,3 +9,4 @@ src/Modules/Log/storage/success.log
 /node_modules/
 /tmp/cache/
 error_log
+.phpunit.result.cache

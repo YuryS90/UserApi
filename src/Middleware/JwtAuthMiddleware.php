@@ -15,15 +15,20 @@ class JwtAuthMiddleware extends AbstractMiddleware
         // Конфигурация JwtAuthentication
         $jwtMiddleware = new JwtAuthentication([
             "path" => [
-                // Аутентификация для всех внутренних маршрутов
+                // Доступ для всех маршрутов
                 //"/",
-                // Аутентификация для всех клиентских маршрутов
+                // Доступ только для api-маршрутов
                 "/api"
             ],
             // Исключение, где проверка аутентификации не нужна
             "ignore" => [
-                "/api/users/signin",
-                //"/api/users/me"
+                "/api/users/create",
+                "/api/auth/login",
+                "/api/auth/refresh-tokens",
+                "/api/auth/logout",
+
+                // Даю доступ к получению продуктов на гл стр клиента
+                "/api/products",
             ],
             // Имя атрибута, в котором будет храниться декодированная информация о токене
             "attribute" => "jwt_token",

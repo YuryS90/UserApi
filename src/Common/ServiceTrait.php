@@ -106,22 +106,12 @@ trait ServiceTrait
     }
 
     /** @return object|ResponseInterface|Message|Response */
-    public function responseJson(int $status, array $data, $token = '')
+    public function responseJson(int $status, array $data)
     {
         // В случае middleware
         if (empty($this->response)) {
             $this->response = new Response();
         }
-
-        // Вместо этого...
-        if ($token) {
-            $data['token'] = $token;
-        }
-
-        // Это...
-        //if ($data['token']) {
-        //    $payload['token'] = $data['token'];
-        //}
 
         // Запись ответа в Body (вместо $data передавать $payload)
         $this->response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));

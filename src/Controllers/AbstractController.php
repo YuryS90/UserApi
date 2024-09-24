@@ -32,6 +32,7 @@ abstract class AbstractController
     protected const REPO_GALLERY = 'gallery';
     protected const REPO_PRODUCT_TAGS = 'productTags';
     protected const REPO_COLOR_PRODUCTS = 'colorProducts';
+    protected const REPO_REFRESH_SESSIONS = 'refreshSessions';
 
     protected const KEY_CATEGORIES = 'categories';
     protected const KEY_USER_ROLES = 'user_roles';

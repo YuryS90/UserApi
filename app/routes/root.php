@@ -8,6 +8,8 @@ return function ($app) {
     $app->group('/api', include 'app/routes/api/api.php');
 
     // CRUD категорий, тегов, цветов, пользователей
+    $app->group('/orders', include 'app/routes/order/order.php');
+
     $app->group('/products', include 'app/routes/product/product.php');
 
     $app->group('/categories', include 'app/routes/category/category.php');
