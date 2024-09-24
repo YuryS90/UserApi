@@ -33,7 +33,7 @@
                             </div>
 
                             <form action="{{ url_for('tag.delete', { 'tag': tag.id }) }}" method="post">
-                                {{ csrf_field() | raw }}
+{#                                {{ csrf_field() | raw }}#}
                                 <input type="hidden" name="_METHOD" value="DELETE">
                                 <input type="submit" class="btn btn-danger" value="Удалить">
                             </form>

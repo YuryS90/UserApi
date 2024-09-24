@@ -40,6 +40,7 @@ class CheckForRequired extends AbstractValidate
             'category' => 'Некорректный ID',
             'color' => 'Некорректный ID',
             'tag' => 'Некорректный ID',
+            'order' => 'Некорректный ID',
 
             'id' => 'Некорректный ID',
         ];

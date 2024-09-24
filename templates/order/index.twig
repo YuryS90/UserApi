@@ -1,0 +1,68 @@
+{% extends "./layouts/main.twig" %}
+
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Заказы</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('home') }}">Главная</a>
+                        </li>
+                        <li class="breadcrumb-item active">Заказы</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+{#                            <a href="{{ url_for('order.create') }}" class="btn btn-primary">Добавить</a>#}
+                            <a href="#" class="btn btn-primary">Добавить</a>
+                        </div>
+
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>№ заказа</th>
+                                    <th>Клиент</th>
+                                    <th>Адрес</th>
+                                    <th>Сумма заказа</th>
+                                    <th>Статус</th>
+                                    <th>Дата и время заказа</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for order in orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>
+                                            <a href="{{ url_for('order.show', { 'order': order.id }) }}">
+                                                {{ order.userId }}</a>
+                                        </td>
+                                        <td>{{ order.address }}</td>
+                                        <td>{{ order.totalPrice }}</td>
+                                        <td>{{ order.statusId }}</td>
+                                        <td>{{ order.created }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

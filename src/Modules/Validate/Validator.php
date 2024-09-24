@@ -52,10 +52,11 @@ class Validator
     }
 
     /** @throws \Exception */
-    public function execute(array $payload): void
+    public function execute(array $payload, bool $test = false, array $rule = []): void
     {
+        $rules = $test ? $rule : explode('|', $this->rules()[$payload['name']]);
         // Разбиваем строку, напр. "required|string|max:255"
-        $rules = explode('|', $this->rules()[$payload['name']]);
+        //$rules = explode('|', $this->rules()[$payload['name']]);
 
         foreach ($rules as $rule) {
             // Получаем название правила и массив параметров (если есть)
@@ -66,10 +67,6 @@ class Validator
 
             // Получаем объект правила через фабрику
             $ruleClass = ValidateFactory::create($ruleName, $this->container);
-
-            if (!is_object($ruleClass)) {
-                throw new \Exception("Класс CheckFor<???> с соответствующим правилом не создан!");
-            }
 
             // Если есть ошибки, прекращаем выполнение
             if (!$ruleClass->validate($payload['value'], explode(',', $ruleParams), $payload['confirm'] ?? null)) {
@@ -98,7 +95,7 @@ class Validator
     }
 
     /** Поля подчинённые зарегистрированным правилам */
-    private function rules(): array
+    public function rules(): array
     {
         return [
             // Для пользователей
@@ -133,8 +130,14 @@ class Validator
             'category' => 'required|integer|zero|unique:categories,id',
             'color' => 'required|integer|zero|unique:colors,id',
             'tag' => 'required|integer|zero|unique:tags,id',
+            'order' => 'required|integer|zero|unique:orders,id',
 
             'id' => 'required|integer|zero',
         ];
+    }
+
+    public function getError(): ?string
+    {
+        return $this->error;
     }
 }

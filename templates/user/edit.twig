@@ -41,7 +41,7 @@
                       action="{{ url_for('user.update', { 'user': user.id }) }}" method="post">
 
                     <input type="hidden" name="_METHOD" value="PATCH">
-                    {{ csrf_field() | raw }}
+{#                    {{ csrf_field() | raw }}#}
 
                     <div class="form-group">
                         <input type="text" name="name" class="form-control"

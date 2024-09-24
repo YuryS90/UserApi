@@ -15,6 +15,8 @@ class ProfileController extends AbstractController
             // содержимое декодированного токена сохраняется как jwt_token атрибут
             $decoded = $this->request->getAttribute('jwt_token');
 
+            // Либо обратиться к БД чтобы отдать пользователя
+
             return $this->responseJson(200, [
                 'data' => $decoded['data']
             ]);

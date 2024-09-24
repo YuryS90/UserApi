@@ -36,6 +36,7 @@ class CheckForUnique extends AbstractValidate
             'category' => 'Такой категории нет!',
             'color' => 'Такого цвета нет!',
             'tag' => 'Такого тега нет!',
+            'order' => 'Такого заказа нет!',
 
             'article' => 'Артикул уже существует!',
         ];

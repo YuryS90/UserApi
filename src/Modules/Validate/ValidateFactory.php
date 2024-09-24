@@ -31,8 +31,9 @@ class ValidateFactory
         $className = self::$rules[$ruleName]['class'] ?? null;
 
         if (!$className) {
-            return null;
+            throw new \Exception("Класс {$ruleName} с соответствующим правилом не создан!");
         }
+
         return new $className($container);
     }
 }
