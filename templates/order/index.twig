@@ -25,7 +25,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-{#                            <a href="{{ url_for('order.create') }}" class="btn btn-primary">Добавить</a>#}
+                            {#                            <a href="{{ url_for('order.create') }}" class="btn btn-primary">Добавить</a> #}
                             <a href="#" class="btn btn-primary">Добавить</a>
                         </div>
 
@@ -41,7 +41,8 @@
                                     <th>Дата и время заказа</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+
+                                <tbody id="ordersTableBody">
 
                                 {% for order in orders %}
                                     <tr>
@@ -65,4 +66,78 @@
             </div>
         </div>
     </section>
+
+    <script>
+        // Подключение к WebSocket-серверу Workerman
+        const ws = new WebSocket('ws://127.0.0.1:2346');
+
+        ws.onmessage = function (event) {
+            console.log("Получено сообщение:", event.data); // отладка
+            try {
+                const data = JSON.parse(event.data); // Попытка декодировать JSON
+                console.log("Декодированные данные:", data); // отладка
+
+                const orderNo = data.orderNo;
+                const message = data.message;
+
+                // Пример уведомления о новом заказе (можно заменить на реальное уведомление)
+                alert(message);
+
+                const tableBody = document.getElementById('ordersTableBody');
+                const newRow = document.createElement('tr');
+
+                // Создаем новую строку для таблицы заказов
+                newRow.innerHTML = `
+                <td>${orderNo}</td>
+                <td>${data.userId || 'Неизвестный пользователь'}</td>
+                <td>${data.address || 'Адрес не указан'}</td>
+                <td>${data.totalPrice || '0.00'}</td>
+                <td>${data.statusId || 'Неизвестный статус'}</td>
+                <td>${data.created || 'Дата неизвестна'}</td>
+            `;
+
+                // Добавляем новый заказ в начало таблицы
+                tableBody.insertBefore(newRow, tableBody.firstChild);
+                // Добавляем новую строку в таблицу заказов
+                //document.getElementById('ordersTableBody').innerHTML += newRow;
+            } catch (e) {
+                console.error("Ошибка при обработке сообщения:", e);
+            }
+        }
+
+        ws.onopen = function () {
+            console.log('WebSocket connection opened');
+        };
+
+        ws.onclose = function () {
+            console.log('WebSocket connection closed');
+        };
+
+
+        // Обработчик сообщений от WebSocket-сервера
+        {#ws.onmessage = function (event) {#}
+        {#    const newOrder = JSON.parse(event.data);#}
+
+        {#    // Обновление таблицы с заказами#}
+        {#    const tableBody = document.getElementById('ordersTableBody');#}
+        {#    const newRow = document.createElement('tr');#}
+
+        {#    newRow.innerHTML = `#}
+        {#    <td>${newOrder.orderId}</td>#}
+        {#    <td><a href="{{ url_for('order.show', { 'order': '${newOrder.orderId}' }) }}">${newOrder.userEmail}</a></td>#}
+        {#    <td>${newOrder.address || 'N/A'}</td>#}
+        {#    <td>${newOrder.totalPrice}</td>#}
+        {#    <td>${newOrder.status}</td>#}
+        {#    <td>${new Date().toLocaleString()}</td>#}
+        {#`;#}
+
+        {#    // Добавляем новый заказ в начало таблицы#}
+        {#    tableBody.insertBefore(newRow, tableBody.firstChild);#}
+        {#};#}
+
+        {#// Обработчик ошибок WebSocket#}
+        {#ws.onerror = function (error) {#}
+        {#    console.error('WebSocket error:', error);#}
+        {#};#}
+    </script>
 {% endblock %}

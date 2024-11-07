@@ -23,16 +23,39 @@ class StoreController extends AbstractController
             'status_id' => 1
         ]);
 
-        foreach ($order['items'] as $item) {
-            $this->orderItemRepo->insertOrUpdate([
-                'order_id' => $orderId,
-                'test_id' => $item
-            ]);
-        }
+       foreach ($order['items'] as $item) {
+           $this->orderItemRepo->insertOrUpdate([
+               'order_id' => $orderId,
+               'test_id' => $item
+           ]);
+       }
+
+        // Отправка данных на WebSocket сервер
+        $this->sendToWebSocketServer([
+            'orderNo' => $orderId,
+            'userId' => $jwt->email ?? 'test', // Добавляем email клиента
+            'address' => $order['address'] ?? 'Не добавлен!',
+            'totalPrice' => $order['totalPrice'] ?? '100',
+            'statusId' => 'Ожидание',
+            'created' => date('Y-m-d H:i:s'),
+            'message' => 'Новый заказ оформлен!'
+        ]);
 
         return $this->responseJson(201, [
-            'orderNo' => $orderId,
+            'orderNo' => 123,
             'message' => 'Заказ оформлен!'
         ]);
+    }
+
+    private function sendToWebSocketServer(array $data)
+    {
+        try {
+            $wsUrl = 'ws://127.0.0.1:2346';
+            $client = new \WebSocket\Client($wsUrl);
+            $client->send(json_encode($data));
+            $client->close();
+        } catch (\Exception $e) {
+            echo "Ошибка при отправке данных на WebSocket-сервер: " . $e->getMessage();
+        }
     }
 }

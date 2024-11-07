@@ -24,8 +24,27 @@ class IndexController extends AbstractController
             'orderByIdDesc' => true,
         ]);
 
+        // Отправка данных на WebSocket сервер
+//        $this->sendToWebSocketServer([
+//
+//            'orders' => $orders,
+//            'message' => 'Новый заказ оформлен!'
+//        ]);
+
         return $this->render($this->template, [
             'orders' => $orders
         ]);
+    }
+
+    private function sendToWebSocketServer(array $data)
+    {
+        try {
+            $wsUrl = 'ws://127.0.0.1:2346';
+            $client = new \WebSocket\Client($wsUrl);
+            $client->send(json_encode($data));
+            $client->close();
+        } catch (\Exception $e) {
+            echo "Ошибка при отправке данных на WebSocket-сервер: " . $e->getMessage();
+        }
     }
 }
